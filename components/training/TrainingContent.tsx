@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import { ArrowUpRight, GraduationCap, Video, Users, CheckCircle2, Clock } from "lucide-react";
+import { PageHeroShell } from "@/components/PageHero";
 
 type Course = {
   id: string;
@@ -147,17 +148,21 @@ export function TrainingContent() {
 
   return (
     <>
-      <section className="border-b border-primary/10 bg-primary text-primary-foreground">
-        <div className="container-x grid gap-10 py-20 md:grid-cols-12 md:py-28">
+      <PageHeroShell>
+        <div className="container-x grid gap-8 py-12 md:grid-cols-12 md:py-16">
           <div className="md:col-span-7">
-            <span className="text-xs font-semibold uppercase tracking-widest text-accent">Practitioner Training</span>
-            <h1 className="mt-3 max-w-3xl font-display text-5xl font-semibold md:text-6xl">Coming Soon</h1>
-            <p className="mt-6 max-w-2xl text-primary-foreground/90">
+            <span className="text-xs font-semibold uppercase tracking-widest text-accent">
+              Practitioner Training
+            </span>
+            <h1 className="mt-3 max-w-3xl font-display text-3xl font-semibold md:text-4xl lg:text-5xl">
+              Coming Soon
+            </h1>
+            <p className="mt-5 max-w-2xl text-sm text-primary-foreground/90 md:text-base">
               Icoone, Exosomes, Peptides and Nutrition training programs are in development. Enrollments will
               open for licensed practitioners and wellness professionals. Build clinical confidence, add new
               revenue lines and meet documentation standards across four high-demand modalities.
             </p>
-            <div className="mt-6 flex flex-wrap gap-6 text-xs uppercase tracking-widest text-primary-foreground/85">
+            <div className="mt-5 flex flex-wrap gap-4 text-[11px] uppercase tracking-widest text-primary-foreground/85">
               <span className="inline-flex items-center gap-2">
                 <Clock className="size-4 text-accent" /> Launching soon
               </span>
@@ -173,7 +178,7 @@ export function TrainingContent() {
             </div>
           </div>
           <div className="md:col-span-5">
-            <div className="overflow-hidden rounded-sm border border-accent/30">
+            <div className="overflow-hidden rounded-2xl border border-accent/30">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/people-training.jpg"
@@ -181,12 +186,12 @@ export function TrainingContent() {
                 width={1280}
                 height={896}
                 loading="lazy"
-                className="h-64 w-full object-cover md:h-full"
+                className="h-56 w-full object-cover md:h-full"
               />
             </div>
           </div>
         </div>
-      </section>
+      </PageHeroShell>
 
       {status === "ok" && (
         <div className="border-b border-accent/30 bg-accent/10">

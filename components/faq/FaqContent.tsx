@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Phone, Mail, MessageSquare } from "lucide-react";
+import { PageHero } from "@/components/PageHero";
 
 export type FaqCategory = {
   id: string;
@@ -165,32 +166,26 @@ export function FaqContent({
 
   return (
     <>
-      <section className="bg-primary text-primary-foreground">
-        <div className="container-x py-24 md:py-32">
-          <span className="text-xs font-semibold uppercase tracking-widest text-accent">Support</span>
-          <h1 className="mt-3 max-w-3xl font-display text-5xl font-semibold leading-tight md:text-7xl">
-            Frequently Asked Questions.
-          </h1>
-          <p className="mt-6 max-w-2xl text-primary-foreground/90">
-            Answers for practitioners, partners, and prospective accounts. Cannot find what you are looking for?
-            Reach out and we will respond within one business day.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 rounded-sm bg-accent px-6 py-3.5 text-sm font-semibold uppercase tracking-wider text-accent-foreground transition hover:bg-gold-soft"
-            >
-              Contact us <ArrowUpRight className="size-4" />
-            </Link>
-            <a
-              href="tel:8778476423"
-              className="inline-flex items-center gap-2 rounded-sm border border-primary-foreground/50 px-6 py-3.5 text-sm font-semibold uppercase tracking-wider transition hover:bg-primary-foreground/10"
-            >
-              <Phone className="size-4" /> 877-847-6423
-            </a>
-          </div>
+      <PageHero
+        eyebrow="Support"
+        title="Frequently Asked Questions."
+        description="Answers for practitioners, partners, and prospective accounts. Cannot find what you are looking for? Reach out and we will respond within one business day."
+      >
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-accent-foreground transition hover:bg-gold-soft"
+          >
+            Contact us <ArrowUpRight className="size-4" />
+          </Link>
+          <a
+            href="tel:8778476423"
+            className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/40 px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] transition hover:bg-primary-foreground/10"
+          >
+            <Phone className="size-4" /> 877-847-6423
+          </a>
         </div>
-      </section>
+      </PageHero>
 
       <section className="container-x py-24">
         <div className="grid gap-16 md:grid-cols-12">

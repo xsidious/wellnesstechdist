@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ShieldCheck, FileCheck2, Stethoscope, ClipboardList } from "lucide-react";
 import { SignupForm } from "@/components/register/SignupForm";
+import { PageHero } from "@/components/PageHero";
 
 const highlights = [
   {
@@ -36,24 +37,18 @@ export default async function PrescribersPage({
 
   return (
     <>
-      <section className="bg-primary text-primary-foreground">
-        <div className="container-x py-24 md:py-32">
-          <span className="text-xs font-semibold uppercase tracking-widest text-accent">
-            For licensed physicians
-          </span>
-          <h1 className="mt-3 max-w-3xl font-display text-5xl font-semibold leading-tight md:text-7xl">
+      <PageHero
+        eyebrow="For licensed physicians"
+        title={
+          <>
             Become a <span className="italic text-accent">prescriber</span>.
-          </h1>
-          <p className="mt-6 max-w-2xl text-primary-foreground/90">
-            Create your Wellness Tech Distribution account below. Use NPI Registry search to autofill
-            credentials — our team reviews and approves verified practices before ordering access is
-            enabled.
-          </p>
-        </div>
-      </section>
+          </>
+        }
+        description="Create your Wellness Tech Distribution account below. Use NPI Registry search to autofill credentials — our team reviews and approves verified practices before ordering access is enabled."
+      />
 
-      <section className="container-x py-20">
-        <div className="mb-12 overflow-hidden rounded-sm border border-primary/10">
+      <section className="container-x py-12 md:py-16">
+        <div className="mb-10 overflow-hidden rounded-3xl border border-primary/10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/people-physician.jpg"
@@ -61,28 +56,31 @@ export default async function PrescribersPage({
             width={1280}
             height={896}
             loading="lazy"
-            className="h-64 w-full object-cover md:h-96"
+            className="h-64 w-full object-cover md:h-80"
           />
         </div>
-        <div className="grid gap-6 md:grid-cols-4">
+        <div className="grid gap-3 md:grid-cols-4">
           {highlights.map((h) => (
-            <div key={h.title} className="rounded-sm border border-primary/10 bg-card p-6">
-              <h.icon className="size-6 text-accent" />
-              <div className="mt-4 font-display text-lg font-semibold text-primary">{h.title}</div>
+            <div
+              key={h.title}
+              className="rounded-2xl border border-primary/10 bg-white p-5 shadow-[0_12px_32px_rgba(15,40,60,0.04)]"
+            >
+              <h.icon className="size-5 text-accent" />
+              <div className="mt-3 font-display text-lg font-semibold text-primary">{h.title}</div>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{h.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section id="register" className="container-x grid gap-16 pb-24 md:grid-cols-12">
-        <div className="space-y-6 md:col-span-4">
-          <div className="rounded-sm border border-primary/10 bg-primary/5 p-6">
+      <section id="register" className="container-x grid gap-8 pb-16 md:grid-cols-12 md:gap-10">
+        <div className="space-y-4 md:col-span-4">
+          <div className="rounded-3xl border border-primary/10 bg-primary/[0.03] p-5">
             <div className="text-xs uppercase tracking-widest text-accent">What happens next</div>
             <ol className="mt-3 space-y-2 text-sm text-primary/80">
               <li>
-                <span className="font-semibold text-primary">1.</span> Complete the signup form and
-                look up your NPI.
+                <span className="font-semibold text-primary">1.</span> Complete the multi-step signup
+                and look up your NPI.
               </li>
               <li>
                 <span className="font-semibold text-primary">2.</span> Your account is created as
@@ -109,7 +107,7 @@ export default async function PrescribersPage({
         </div>
 
         <div className="md:col-span-8">
-          <SignupForm role="PROVIDER" error={sp.error} />
+          <SignupForm role="PROVIDER" error={sp.error} embedded />
         </div>
       </section>
     </>

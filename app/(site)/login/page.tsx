@@ -46,7 +46,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
   }
 
   return (
-    <section className="container-x flex min-h-[70vh] items-center justify-center py-16">
+    <section className="px-3 py-8 md:py-12">
+      <div className="container-x flex min-h-[60vh] items-center justify-center">
       <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-primary/10 bg-white shadow-[0_24px_80px_rgba(15,40,60,0.08)] md:grid-cols-2">
         <div className="relative hidden bg-primary p-10 text-primary-foreground md:flex md:flex-col md:justify-between">
           <div>
@@ -135,6 +136,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
             <code className="text-primary">/account</code>.
           </p>
         </div>
+      </div>
       </div>
     </section>
   );

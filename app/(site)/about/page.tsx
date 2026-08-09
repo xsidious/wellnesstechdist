@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { PageHero } from "@/components/PageHero";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -92,18 +93,11 @@ const whyItMatters = [
 export default function AboutPage() {
   return (
     <>
-      <section className="bg-primary text-primary-foreground">
-        <div className="container-x py-16 md:py-24">
-          <span className="text-xs font-semibold uppercase tracking-widest text-accent">About us</span>
-          <h1 className="mt-3 max-w-3xl font-display text-4xl font-semibold leading-tight md:text-5xl">
-            Wellness Tech Distribution
-          </h1>
-          <p className="mt-5 max-w-2xl text-lg text-accent md:text-xl">
-            Trusted sourcing, clinician education, and secure B2B tech to scale evidence‑informed
-            aesthetic and wellness medicine.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="About us"
+        title="Wellness Tech Distribution"
+        description="Trusted sourcing, clinician education, and secure B2B tech to scale evidence‑informed aesthetic and wellness medicine."
+      />
 
       <section className="container-x py-16 md:py-24">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-accent">

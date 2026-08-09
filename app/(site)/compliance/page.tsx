@@ -3,6 +3,7 @@
 import { FileDown, ShieldCheck, FlaskConical, AlertTriangle, Lock } from "lucide-react";
 import { useAccess } from "@/lib/access";
 import { CatalogAccessGate } from "@/components/CatalogAccessGate";
+import { PageHero } from "@/components/PageHero";
 
 export default function CompliancePage() {
   const access = useAccess();
@@ -10,20 +11,11 @@ export default function CompliancePage() {
 
   return (
     <>
-      <section className="bg-primary text-primary-foreground">
-        <div className="container-x py-24 md:py-32">
-          <span className="text-xs font-semibold uppercase tracking-widest text-accent">
-            Compliance
-          </span>
-          <h1 className="mt-3 max-w-3xl font-display text-5xl font-semibold leading-tight md:text-7xl">
-            503A & 503B compounded Rx.
-          </h1>
-          <p className="mt-6 max-w-2xl text-primary-foreground/90">
-            Every product in our catalog is compounded under strict 503A or 503B guidelines. All
-            orders are physician-prescribed, batch-tested, and dispensed with complete traceability.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Compliance"
+        title="503A & 503B compounded Rx."
+        description="Every product in our catalog is compounded under strict 503A or 503B guidelines. All orders are physician-prescribed, batch-tested, and dispensed with complete traceability."
+      />
 
       <section className="container-x grid gap-8 py-24 md:grid-cols-2">
         <div className="rounded-sm border border-primary/10 bg-card p-10">

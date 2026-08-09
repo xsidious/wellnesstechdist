@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Truck,
 } from "lucide-react";
+import { PageHero } from "@/components/PageHero";
 
 const categories = [
   {
@@ -82,21 +83,11 @@ export default function SuppliesPage() {
 
   return (
     <>
-      <section className="border-b border-primary/10 bg-primary/5">
-        <div className="container-x py-20 md:py-28">
-          <span className="text-xs font-semibold uppercase tracking-widest text-accent">
-            Distribution
-          </span>
-          <h1 className="mt-3 max-w-3xl font-display text-5xl font-semibold text-primary md:text-6xl">
-            Aesthetic & Medical Supplies
-          </h1>
-          <p className="mt-6 max-w-2xl text-muted-foreground">
-            One source for the supplies that keep your practice running — from injectables ancillaries
-            and aesthetic device consumables to clinical essentials and PPE. Wholesale pricing for
-            verified medical and aesthetic practices, with custom sourcing available.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Distribution"
+        title="Aesthetic & Medical Supplies"
+        description="One source for the supplies that keep your practice running — from injectables ancillaries and aesthetic device consumables to clinical essentials and PPE. Wholesale pricing for verified medical and aesthetic practices, with custom sourcing available."
+      />
 
       {status === "ok" && (
         <div className="border-b border-accent/30 bg-accent/10">

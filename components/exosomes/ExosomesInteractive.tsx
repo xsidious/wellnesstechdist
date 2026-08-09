@@ -12,6 +12,7 @@ import {
   FolderOpen,
 } from "lucide-react";
 import { catalog, allItems } from "./catalog";
+import { PageHeroShell } from "@/components/PageHero";
 
 const registrationSchema = z.object({
   firstName: z.string().trim().min(2, "Required").max(60),
@@ -185,13 +186,14 @@ export function ExosomesInteractive() {
   return (
     <>
       {!registration && (
-        <section id="register" className="border-b border-primary/10 bg-primary text-primary-foreground">
-          <div className="container-x grid gap-10 py-16 md:grid-cols-12 md:py-20">
+        <div id="register" className="py-2">
+        <PageHeroShell>
+          <div className="container-x grid gap-8 py-10 md:grid-cols-12 md:py-12">
             <div className="md:col-span-5">
               <span className="text-xs font-semibold uppercase tracking-widest text-accent">
                 Step 1 — Practice Registration
               </span>
-              <h2 className="mt-2 font-display text-3xl font-semibold md:text-4xl">
+              <h2 className="mt-2 font-display text-2xl font-semibold md:text-3xl">
                 Register your practice to unlock ordering.
               </h2>
               <p className="mt-3 text-sm text-primary-foreground/90">
@@ -199,7 +201,7 @@ export function ExosomesInteractive() {
                 under medical direction), MedSpas and authorized aesthetic retailers. Submit your credentials
                 once — SPA pricing, suggested retail and the online order form will open.
               </p>
-              <ul className="mt-6 space-y-2 text-sm text-primary-foreground/85">
+              <ul className="mt-5 space-y-2 text-sm text-primary-foreground/85">
                 <li className="flex gap-2">
                   <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-accent" /> One-time form per practice
                 </li>
@@ -215,7 +217,7 @@ export function ExosomesInteractive() {
             </div>
             <form
               onSubmit={onRegister}
-              className="md:col-span-7 rounded-sm border border-primary-foreground/25 bg-background p-6 text-foreground md:p-8"
+              className="md:col-span-7 rounded-2xl border border-primary-foreground/25 bg-background p-5 text-foreground md:p-6"
             >
               <div className="grid gap-5 md:grid-cols-2">
                 <Field name="firstName" label="First name" error={regErrs.firstName} />
@@ -280,13 +282,14 @@ export function ExosomesInteractive() {
               </div>
               <button
                 type="submit"
-                className="mt-6 inline-flex items-center justify-center gap-2 rounded-sm bg-primary px-6 py-3.5 text-sm font-semibold uppercase tracking-wider text-primary-foreground hover:bg-primary/90"
+                className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-primary-foreground hover:bg-primary/90"
               >
                 Register & unlock order form <ArrowUpRight className="size-4" />
               </button>
             </form>
           </div>
-        </section>
+        </PageHeroShell>
+        </div>
       )}
 
       <section className="border-b border-primary/10 bg-background">

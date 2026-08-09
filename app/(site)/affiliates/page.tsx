@@ -5,6 +5,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { ArrowUpRight, TrendingUp, Map, Megaphone, Wallet } from "lucide-react";
 import { grantAccess } from "@/lib/access";
+import { PageHeroShell } from "@/components/PageHero";
 
 const tiers = [
   { name: "Associate", desc: "Independent reps building a clinic book of business." },
@@ -82,21 +83,21 @@ export default function AffiliatesPage() {
 
   return (
     <>
-      <section className="bg-primary text-primary-foreground">
-        <div className="container-x grid gap-12 py-24 md:grid-cols-12 md:py-32">
+      <PageHeroShell>
+        <div className="container-x grid gap-10 py-12 md:grid-cols-12 md:py-16">
           <div className="md:col-span-7">
             <span className="text-xs font-semibold uppercase tracking-widest text-accent">
               Affiliate program
             </span>
-            <h1 className="mt-3 font-display text-3xl font-semibold leading-tight md:text-5xl">
+            <h1 className="mt-3 font-display text-3xl font-semibold leading-tight md:text-4xl lg:text-5xl">
               Sell the most-requested products in compounded medicine.
             </h1>
-            <p className="mt-6 max-w-xl text-lg text-primary-foreground/90">
+            <p className="mt-5 max-w-xl text-base text-primary-foreground/90 md:text-lg">
               A curated network of independent reps connecting clinics with compounded GLP-1s,
               peptides and NAD+ therapies. We provide the catalog, compliance resources and logistics
               support — you bring the relationships.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-7 flex flex-wrap gap-3">
               <a
                 href="#apply"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-accent-foreground shadow-[0_12px_28px_rgba(0,0,0,0.16)] hover:bg-gold-soft"
@@ -110,14 +111,15 @@ export default function AffiliatesPage() {
                 Register as ambassador
               </Link>
             </div>
-            <div className="mt-8 overflow-hidden rounded-3xl border border-accent/30">
+            <div className="mt-7 overflow-hidden rounded-2xl border border-accent/30">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/business-professionals.jpg"
                 alt="Wellness Tech Bio Distribution business professionals"
                 width={1280}
                 height={896}
                 loading="lazy"
-                className="h-56 w-full object-cover md:h-72"
+                className="h-48 w-full object-cover md:h-60"
               />
             </div>
             <p className="mt-4 text-sm text-primary-foreground/80">
@@ -132,11 +134,11 @@ export default function AffiliatesPage() {
             </p>
           </div>
           <div className="md:col-span-5">
-            <div className="rounded-3xl border border-accent/30 bg-primary/40 p-8 backdrop-blur">
+            <div className="rounded-2xl border border-accent/30 bg-primary/40 p-6 backdrop-blur md:p-7">
               <div className="text-xs uppercase tracking-widest text-accent">Commission tiers</div>
-              <ul className="mt-6 divide-y divide-primary-foreground/10">
+              <ul className="mt-4 divide-y divide-primary-foreground/10">
                 {tiers.map((t) => (
-                  <li key={t.name} className="py-4">
+                  <li key={t.name} className="py-3.5">
                     <span className="font-display text-lg font-semibold">{t.name}</span>
                     <p className="mt-1 text-sm text-primary-foreground/85">{t.desc}</p>
                   </li>
@@ -145,7 +147,7 @@ export default function AffiliatesPage() {
             </div>
           </div>
         </div>
-      </section>
+      </PageHeroShell>
 
       <section className="container-x py-24">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">

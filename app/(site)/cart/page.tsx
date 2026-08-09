@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getCart, updateCartItem, removeCartItem } from "./actions";
 import { formatCents } from "@/lib/utils";
+import { PageHero } from "@/components/PageHero";
 
 export const dynamic = "force-dynamic";
 
@@ -24,17 +25,23 @@ export default async function CartPage() {
   );
 
   return (
-    <section className="container-x py-16 md:py-24">
-      <h1 className="font-display text-4xl font-semibold text-primary">Cart</h1>
+    <>
+      <PageHero
+        eyebrow="Marketplace"
+        title="Cart"
+        description="Review items before checkout."
+        size="sm"
+      />
+      <section className="container-x py-10 md:py-14">
       {items.length === 0 ? (
-        <p className="mt-6 text-muted-foreground">
+        <p className="text-muted-foreground">
           Your cart is empty.{" "}
           <Link href="/shop" className="text-accent hover:underline">
             Continue shopping
           </Link>
         </p>
       ) : (
-        <div className="mt-10 space-y-6">
+        <div className="space-y-6">
           <ul className="divide-y divide-primary/10 border-t border-primary/10">
             {items.map((item) => (
               <li key={item.id} className="flex flex-wrap items-center justify-between gap-4 py-5">
@@ -91,5 +98,6 @@ export default async function CartPage() {
         </div>
       )}
     </section>
+    </>
   );
 }

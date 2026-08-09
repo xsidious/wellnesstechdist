@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { formatCents } from "@/lib/utils";
+import { PageHero } from "@/components/PageHero";
 
 export const dynamic = "force-dynamic";
 
@@ -25,17 +26,20 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
 
   return (
     <>
-      <section className="bg-primary text-primary-foreground">
-        <div className="container-x py-16 md:py-20">
-          <span className="text-xs font-semibold uppercase tracking-widest text-accent">Marketplace</span>
-          <h1 className="mt-3 font-display text-5xl font-semibold">Shop</h1>
-          {category && (
-            <p className="mt-3 text-sm text-primary-foreground/80">
+      <PageHero
+        eyebrow="Marketplace"
+        title="Shop"
+        description={
+          category ? (
+            <>
               Filtered by category: <span className="text-accent">{category}</span>
-            </p>
-          )}
-        </div>
-      </section>
+            </>
+          ) : (
+            "Live product inventory for verified practices and partners."
+          )
+        }
+        size="sm"
+      />
       <section className="container-x py-12 md:py-16">
         {error && <p className="text-muted-foreground">{error}</p>}
         {!error && products.length === 0 && (

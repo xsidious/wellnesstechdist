@@ -4,6 +4,7 @@ import { getCart } from "@/app/(site)/cart/actions";
 import { placeOrderAndRedirect } from "./actions";
 import { formatCents } from "@/lib/utils";
 import { auth } from "@/lib/auth";
+import { PageHero } from "@/components/PageHero";
 
 export const dynamic = "force-dynamic";
 
@@ -23,19 +24,27 @@ export default async function CheckoutPage({
 
   if (sp.success && sp.orderId) {
     return (
-      <section className="container-x py-16 md:py-24">
-        <h1 className="font-display text-4xl font-semibold text-primary">Order placed</h1>
-        <p className="mt-4 text-muted-foreground">
-          Thank you. Order ID: <span className="font-medium text-primary">{sp.orderId}</span>
-        </p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          If Stripe is configured, complete payment with the client secret returned to your session.
-          Webhooks will mark the order paid.
-        </p>
-        <Link href="/shop" className="mt-8 inline-flex text-accent hover:underline">
-          Back to shop
-        </Link>
-      </section>
+      <>
+        <PageHero
+          eyebrow="Checkout"
+          title="Order placed"
+          description={
+            <>
+              Thank you. Order ID: <span className="text-accent">{sp.orderId}</span>
+            </>
+          }
+          size="sm"
+        />
+        <section className="container-x py-10 md:py-14">
+          <p className="text-sm text-muted-foreground">
+            If Stripe is configured, complete payment with the client secret returned to your session.
+            Webhooks will mark the order paid.
+          </p>
+          <Link href="/shop" className="mt-6 inline-flex text-accent hover:underline">
+            Back to shop
+          </Link>
+        </section>
+      </>
     );
   }
 
@@ -49,11 +58,17 @@ export default async function CheckoutPage({
   const subtotal = items.reduce((s, i) => s + i.quantity * i.variant.priceCents, 0);
 
   return (
-    <section className="container-x py-16 md:py-24">
-      <h1 className="font-display text-4xl font-semibold text-primary">Checkout</h1>
-      {sp.error && <p className="mt-4 text-sm text-destructive">{sp.error}</p>}
+    <>
+      <PageHero
+        eyebrow="Marketplace"
+        title="Checkout"
+        description="Confirm your order details to place a practice purchase."
+        size="sm"
+      />
+      <section className="container-x py-10 md:py-14">
+      {sp.error && <p className="mb-4 text-sm text-destructive">{sp.error}</p>}
       {items.length === 0 ? (
-        <p className="mt-6 text-muted-foreground">
+        <p className="text-muted-foreground">
           Nothing to checkout.{" "}
           <Link href="/shop" className="text-accent hover:underline">
             Browse shop
@@ -99,5 +114,6 @@ export default async function CheckoutPage({
         </div>
       )}
     </section>
+    </>
   );
 }

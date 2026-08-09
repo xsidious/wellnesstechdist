@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ExosomesInteractive } from "@/components/exosomes/ExosomesInteractive";
+import { PageHero } from "@/components/PageHero";
 
 export const metadata: Metadata = {
   title: "Exosomes for Medical Aesthetics — Wellness Tech Bio Distribution",
@@ -14,26 +15,20 @@ export const metadata: Metadata = {
 export default function ExosomesPage() {
   return (
     <>
-      <section className="border-b border-primary/10 bg-primary/5">
-        <div className="container-x py-20 md:py-28">
-          <span className="text-xs font-semibold uppercase tracking-widest text-accent">Aesthetics Line</span>
-          <h1 className="mt-3 max-w-3xl font-display text-5xl font-semibold text-primary md:text-6xl">
-            Exosomes for Medical Aesthetics
-          </h1>
-          <p className="mt-6 max-w-2xl text-muted-foreground">
-            Professional exosomes, stem-cell and AAPE systems for in-clinic protocols and at-home patient
-            regimens. Pricing and ordering are reserved for verified medical practitioners, MedSpas and
-            authorized retailers — complete a one-time registration below to unlock the full catalog with SPA
-            and MSRP pricing.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-2 text-[10px] uppercase tracking-widest">
-            <span className="rounded-full bg-accent/15 px-3 py-1 text-accent">Practice verification required</span>
-            <span className="rounded-full border border-primary/15 px-3 py-1 text-primary/70">
-              For licensed professionals
-            </span>
-          </div>
+      <PageHero
+        eyebrow="Aesthetics Line"
+        title="Exosomes for Medical Aesthetics"
+        description="Professional exosomes, stem-cell and AAPE systems for in-clinic protocols and at-home patient regimens. Pricing and ordering are reserved for verified medical practitioners, MedSpas and authorized retailers — complete a one-time registration below to unlock the full catalog with SPA and MSRP pricing."
+      >
+        <div className="flex flex-wrap gap-2 text-[10px] uppercase tracking-widest">
+          <span className="rounded-full bg-accent/20 px-3 py-1 text-accent">
+            Practice verification required
+          </span>
+          <span className="rounded-full border border-primary-foreground/25 px-3 py-1 text-primary-foreground/85">
+            For licensed professionals
+          </span>
         </div>
-      </section>
+      </PageHero>
 
       <section className="border-b border-primary/10 bg-background">
         <div className="container-x py-16 md:py-20">

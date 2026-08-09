@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { z } from "zod";
 import { ArrowUpRight, Mail, Phone, MapPin, PhoneCall } from "lucide-react";
+import { PageHero } from "@/components/PageHero";
 
 const callSchema = z.object({
   name: z.string().trim().min(2).max(100),
@@ -88,15 +89,11 @@ export function ContactContent({
 
   return (
     <>
-      <section className="bg-primary text-primary-foreground">
-        <div className="container-x py-24 md:py-32">
-          <span className="text-xs font-semibold uppercase tracking-widest text-accent">How to partner</span>
-          <h1 className="mt-3 max-w-3xl font-display text-5xl font-semibold leading-tight md:text-7xl">
-            Onboard your practice in five steps.
-          </h1>
-          <p className="mt-6 max-w-2xl text-primary-foreground/90">{blurb}</p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="How to partner"
+        title="Onboard your practice in five steps."
+        description={blurb}
+      />
 
       <section className="container-x py-24">
         <div className="mb-14 overflow-hidden rounded-sm border border-primary/10">
