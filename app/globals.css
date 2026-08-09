@@ -181,11 +181,11 @@
   text-transform: uppercase;
   transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 10px 24px oklch(0.35 0.16 215 / 0.18);
-}
 
-@utility btn-primary:hover {
-  background: oklch(0.32 0.16 215);
-  transform: translateY(-1px);
+  &:hover {
+    background: oklch(0.32 0.16 215);
+    transform: translateY(-1px);
+  }
 }
 
 @utility surface-card {
