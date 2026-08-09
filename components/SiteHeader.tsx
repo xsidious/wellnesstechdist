@@ -44,7 +44,7 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
   const homeCompact = pathname === "/";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-primary/10 bg-background/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-primary/10 bg-white">
       <div
         className={`container-x flex items-center justify-between ${
           homeCompact ? "h-12" : "h-16"

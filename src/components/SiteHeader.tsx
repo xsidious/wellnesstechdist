@@ -37,7 +37,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const track = useTrackEvent();
   return (
-    <header className="sticky top-0 z-50 border-b border-primary/10 bg-background/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-primary/10 bg-white">
       <div className="container-x flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center">
           <img
