@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireApiSession } from "@/lib/api-auth";
+import type { Prisma } from "@prisma/client";
 
 export const runtime = "nodejs";
 
@@ -12,11 +13,29 @@ export async function GET(req: Request) {
   const take = Math.min(Number(searchParams.get("take") || 50), 100);
   const cursor = searchParams.get("cursor") || undefined;
   const status = searchParams.get("status") || undefined;
+  const q = (searchParams.get("q") || "").trim();
+
+  const where: Prisma.OrderWhereInput = {};
+  if (status) {
+    where.status = status as
+      | "PENDING"
+      | "PAID"
+      | "FULFILLING"
+      | "COMPLETED"
+      | "CANCELLED"
+      | "REFUNDED";
+  }
+  if (q) {
+    where.OR = [
+      { id: { contains: q } },
+      { email: { contains: q, mode: "insensitive" } },
+      { ambassadorCode: { contains: q, mode: "insensitive" } },
+      { user: { name: { contains: q, mode: "insensitive" } } },
+    ];
+  }
 
   const orders = await prisma.order.findMany({
-    where: status
-      ? { status: status as "PENDING" | "PAID" | "FULFILLING" | "COMPLETED" | "CANCELLED" | "REFUNDED" }
-      : undefined,
+    where,
     include: {
       user: { select: { email: true, name: true } },
       ambassador: { select: { code: true } },
@@ -26,7 +45,7 @@ export async function GET(req: Request) {
           items: true,
         },
       },
-      _count: { select: { items: true } },
+      _count: { select: { items: true, ledgerEntries: true } },
     },
     orderBy: { createdAt: "desc" },
     take,
@@ -46,6 +65,7 @@ export async function GET(req: Request) {
       customerName: o.user?.name || null,
       ambassadorCode: o.ambassador?.code || o.ambassadorCode,
       itemCount: o._count.items,
+      ledgerCount: o._count.ledgerEntries,
       subOrders: o.subOrders.map((s) => ({
         id: s.id,
         status: s.status,

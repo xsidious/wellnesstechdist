@@ -3,17 +3,40 @@ import { kv } from "@/lib/kv";
 
 export type PayoutResult = { ok: true; paid: number; mode: "flagged" | "all" };
 
+const FLAG_SET_KEY = "payout:flagged:ids";
+
+export async function getFlaggedProviderIds(): Promise<string[]> {
+  const ids = (await kv.get<string[]>(FLAG_SET_KEY)) ?? [];
+  return Array.isArray(ids) ? ids : [];
+}
+
+export async function setProviderPayoutFlag(providerId: string, flagged: boolean) {
+  const key = `payout:flag:${providerId}`;
+  if (flagged) {
+    await kv.set(key, "1", { ex: 60 * 60 * 24 * 7 });
+    const ids = new Set(await getFlaggedProviderIds());
+    ids.add(providerId);
+    await kv.set(FLAG_SET_KEY, [...ids], { ex: 60 * 60 * 24 * 7 });
+  } else {
+    await kv.del(key);
+    const ids = (await getFlaggedProviderIds()).filter((id) => id !== providerId);
+    if (ids.length) await kv.set(FLAG_SET_KEY, ids, { ex: 60 * 60 * 24 * 7 });
+    else await kv.del(FLAG_SET_KEY);
+  }
+}
+
 /**
  * Mark AVAILABLE ledger rows as PAID.
- * If any provider payout flags exist in KV, only pay those providers' PROVIDER_EARNING rows
- * (plus all AVAILABLE ambassador commissions / admin fees unless flaggedOnly).
+ * When flaggedProvidersOnly is true, only PROVIDER_EARNING rows for flagged providers are paid
+ * (ambassador commissions / admin fees are also paid in that run).
+ * When false, all AVAILABLE rows are paid regardless of flags.
  */
 export async function runPayouts(opts?: {
   flaggedProvidersOnly?: boolean;
 }): Promise<PayoutResult> {
   const flaggedOnly = opts?.flaggedProvidersOnly ?? false;
+  const mode: "flagged" | "all" = flaggedOnly ? "flagged" : "all";
 
-  // Scan recent provider IDs for flags (providers with AVAILABLE earnings)
   const providerEarnings = await prisma.ledgerEntry.findMany({
     where: { type: "PROVIDER_EARNING", status: "AVAILABLE" },
     select: { id: true, subOrderId: true },
@@ -32,15 +55,13 @@ export async function runPayouts(opts?: {
     : [];
 
   const providerBySub = new Map(subOrders.map((s) => [s.id, s.providerId]));
+  const flaggedList = await getFlaggedProviderIds();
   const flaggedProviders = new Set<string>();
 
-  for (const providerId of new Set(subOrders.map((s) => s.providerId))) {
+  for (const providerId of new Set([...subOrders.map((s) => s.providerId), ...flaggedList])) {
     const flag = await kv.get<string>(`payout:flag:${providerId}`);
     if (flag) flaggedProviders.add(providerId);
   }
-
-  const mode: "flagged" | "all" =
-    flaggedOnly || flaggedProviders.size > 0 ? "flagged" : "all";
 
   const available = await prisma.ledgerEntry.findMany({
     where: { status: "AVAILABLE" },
@@ -83,8 +104,10 @@ export async function runPayouts(opts?: {
     paid += 1;
   }
 
-  for (const providerId of flaggedProviders) {
-    await kv.del(`payout:flag:${providerId}`);
+  if (mode === "flagged") {
+    for (const providerId of flaggedProviders) {
+      await setProviderPayoutFlag(providerId, false);
+    }
   }
 
   return { ok: true, paid, mode };

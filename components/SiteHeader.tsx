@@ -44,12 +44,12 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
   return (
     <header className="sticky top-0 z-50 border-b border-primary/10 bg-background/80 backdrop-blur-xl">
       <div className="container-x flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex shrink-0 items-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/wellness-tech-logo.jpeg"
-            alt="Wellness Tech Distribution logo"
-            className="h-10 object-contain"
+            src="/images/wellness-tech-logo.png"
+            alt="Wellness Tech Distribution"
+            className="h-11 w-auto max-w-[200px] object-contain object-left sm:h-12 sm:max-w-[240px]"
           />
         </Link>
         <nav className="hidden items-center gap-6 lg:flex">

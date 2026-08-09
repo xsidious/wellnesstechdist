@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { kv } from "@/lib/kv";
 import { requireApiSession } from "@/lib/api-auth";
+import { getFlaggedProviderIds, setProviderPayoutFlag } from "@/lib/payouts";
 
 export const runtime = "nodejs";
 
@@ -11,6 +12,8 @@ const LOW_STOCK = 5;
 export async function GET() {
   const gate = await requireApiSession(["ADMIN"]);
   if (!gate.ok) return gate.response;
+
+  const flaggedIds = new Set(await getFlaggedProviderIds());
 
   const providers = await prisma.providerProfile.findMany({
     include: {
@@ -25,6 +28,12 @@ export async function GET() {
     orderBy: { createdAt: "desc" },
   });
 
+  // Refresh flag set from live keys (in case set drifted)
+  for (const p of providers) {
+    const flag = await kv.get<string>(`payout:flag:${p.id}`);
+    if (flag) flaggedIds.add(p.id);
+  }
+
   const rows = providers.map((p) => {
     const stocks = p.products.flatMap((pr) => pr.variants.map((v) => v.stock));
     const totalStock = stocks.reduce((s, n) => s + n, 0);
@@ -36,10 +45,13 @@ export async function GET() {
       businessName: p.businessName,
       approved: p.approved,
       stripeAccountId: p.stripeAccountId,
+      npi: p.npi,
+      phone: p.phone,
       email: p.user.email,
       name: p.user.name,
       productCount: p._count.products,
       subOrderCount: p._count.subOrders,
+      payoutFlagged: flaggedIds.has(p.id),
       stockHealth: {
         totalUnits: totalStock,
         lowStockCount: lowStockSkus.length,
@@ -62,7 +74,6 @@ export async function GET() {
 const postSchema = z.object({
   providerId: z.string().min(1),
   approved: z.boolean().optional(),
-  /** When true, flags provider's AVAILABLE earnings for the next payout cron. */
   payoutFlag: z.boolean().optional(),
   stripeAccountId: z.string().nullable().optional(),
 });
@@ -88,8 +99,8 @@ export async function POST(req: Request) {
     include: { user: { select: { email: true } } },
   });
 
-  if (body.payoutFlag) {
-    await kv.set(`payout:flag:${provider.id}`, "1", { ex: 60 * 60 * 24 * 7 });
+  if (typeof body.payoutFlag === "boolean") {
+    await setProviderPayoutFlag(provider.id, body.payoutFlag);
   }
 
   await kv.del("analytics:v1");
@@ -102,7 +113,10 @@ export async function POST(req: Request) {
       approved: provider.approved,
       stripeAccountId: provider.stripeAccountId,
       email: provider.user.email,
-      payoutFlagged: !!body.payoutFlag,
+      payoutFlagged:
+        typeof body.payoutFlag === "boolean"
+          ? body.payoutFlag
+          : !!(await kv.get(`payout:flag:${provider.id}`)),
     },
   });
 }

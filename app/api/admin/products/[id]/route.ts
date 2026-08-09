@@ -114,9 +114,27 @@ export async function DELETE(_req: Request, ctx: Ctx) {
   if (!gate.ok) return gate.response;
   const { id } = await ctx.params;
 
-  const existing = await prisma.product.findUnique({ where: { id } });
+  const existing = await prisma.product.findUnique({
+    where: { id },
+    include: { variants: { select: { id: true } } },
+  });
   if (!existing) return notFound();
 
+  const variantIds = existing.variants.map((v) => v.id);
+  const orderItemCount =
+    variantIds.length === 0
+      ? 0
+      : await prisma.orderItem.count({ where: { variantId: { in: variantIds } } });
+
+  if (orderItemCount > 0) {
+    await prisma.product.update({ where: { id }, data: { active: false } });
+    return NextResponse.json({
+      ok: true,
+      softDeleted: true,
+      message: "Product has order history — deactivated instead of deleted.",
+    });
+  }
+
   await prisma.product.delete({ where: { id } });
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, softDeleted: false });
 }

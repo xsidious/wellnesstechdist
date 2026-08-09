@@ -2,13 +2,20 @@
 
 import { useState, Fragment } from "react";
 import { formatCents } from "@/lib/utils";
-import { useAdminOrders, useUpdateAdminOrder, type AdminOrderRow } from "@/lib/api/admin";
+import {
+  useAdminOrders,
+  useAdminOrderDetail,
+  useUpdateAdminOrder,
+  type AdminOrderRow,
+} from "@/lib/api/admin";
 
 const ORDER_STATUSES = ["PENDING", "PAID", "FULFILLING", "COMPLETED", "CANCELLED", "REFUNDED"];
 const SUB_STATUSES = ["PENDING", "PAID", "FULFILLING", "SHIPPED", "COMPLETED", "CANCELLED"];
 
 function OrderDetail({ order }: { order: AdminOrderRow }) {
   const update = useUpdateAdminOrder();
+  const detail = useAdminOrderDetail(order.id);
+  const ledger = detail.data?.ledgerEntries ?? [];
 
   return (
     <div className="mt-3 space-y-4 rounded-sm border border-primary/10 bg-card p-4">
@@ -25,9 +32,17 @@ function OrderDetail({ order }: { order: AdminOrderRow }) {
             </option>
           ))}
         </select>
+        <span className="text-xs text-muted-foreground">ID: {order.id}</span>
         {update.isSuccess && <span className="text-xs text-accent">Saved</span>}
         {update.isError && <span className="text-xs text-destructive">{update.error.message}</span>}
       </div>
+
+      <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
+        <div>Subtotal {formatCents(order.subtotalCents)}</div>
+        <div>Platform fee {formatCents(order.feeCents)}</div>
+        <div>Commission {formatCents(order.commissionCents)}</div>
+      </div>
+
       <ul className="space-y-3">
         {order.subOrders.map((s) => (
           <li key={s.id} className="border-t border-primary/10 pt-3 text-sm">
@@ -66,29 +81,79 @@ function OrderDetail({ order }: { order: AdminOrderRow }) {
           </li>
         ))}
       </ul>
+
+      <div className="border-t border-primary/10 pt-3">
+        <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          Ledger
+        </h4>
+        {detail.isLoading && <p className="mt-2 text-xs text-muted-foreground">Loading ledger…</p>}
+        {ledger.length === 0 && !detail.isLoading ? (
+          <p className="mt-2 text-xs text-muted-foreground">No ledger entries.</p>
+        ) : (
+          <ul className="mt-2 space-y-1 text-xs">
+            {ledger.map((e) => (
+              <li key={e.id} className="flex flex-wrap justify-between gap-2">
+                <span>
+                  {e.type} · {e.status}
+                  {e.description ? ` — ${e.description}` : ""}
+                </span>
+                <span className="font-medium">{formatCents(e.amountCents)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
 
 export function AdminOrdersPanel() {
   const [status, setStatus] = useState("");
+  const [q, setQ] = useState("");
+  const [search, setSearch] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
-  const { data: orders = [], isLoading, error } = useAdminOrders(status || undefined);
+  const { data, isLoading, error } = useAdminOrders({
+    status: status || undefined,
+    q: search || undefined,
+  });
+  const orders = data?.orders ?? [];
 
   return (
     <div className="space-y-4">
-      <select
-        className="rounded-sm border border-input px-3 py-2 text-sm"
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-      >
-        <option value="">All statuses</option>
-        {ORDER_STATUSES.map((s) => (
-          <option key={s} value={s}>
-            {s}
-          </option>
-        ))}
-      </select>
+      <div className="flex flex-wrap gap-2">
+        <select
+          className="rounded-sm border border-input px-3 py-2 text-sm"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+        >
+          <option value="">All statuses</option>
+          {ORDER_STATUSES.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+        <form
+          className="flex flex-1 flex-wrap gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setSearch(q.trim());
+          }}
+        >
+          <input
+            className="min-w-[200px] flex-1 rounded-sm border border-input px-3 py-2 text-sm"
+            placeholder="Search email, order id, ambassador…"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="rounded-sm border border-primary/20 px-4 py-2 text-xs font-semibold uppercase tracking-wider"
+          >
+            Search
+          </button>
+        </form>
+      </div>
 
       {isLoading && <p className="text-sm text-muted-foreground">Loading orders…</p>}
       {error && <p className="text-sm text-destructive">{error.message}</p>}
@@ -155,8 +220,8 @@ export function AdminOrdersPanel() {
 }
 
 export function AdminRecentOrders() {
-  const { data: orders = [], isLoading } = useAdminOrders();
-  const recent = orders.slice(0, 8);
+  const { data, isLoading } = useAdminOrders();
+  const recent = (data?.orders ?? []).slice(0, 8);
 
   return (
     <section className="space-y-4">

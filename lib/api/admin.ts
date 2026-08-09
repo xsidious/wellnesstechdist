@@ -23,10 +23,13 @@ export type AdminProvider = {
   businessName: string;
   approved: boolean;
   stripeAccountId: string | null;
+  npi?: string | null;
+  phone?: string | null;
   email: string;
   name: string | null;
   productCount: number;
   subOrderCount: number;
+  payoutFlagged?: boolean;
   stockHealth: {
     totalUnits: number;
     lowStockCount: number;
@@ -47,6 +50,7 @@ export type CommissionTier = {
 export type AmbassadorLeaderboardRow = {
   rank: number;
   id: string;
+  userId?: string;
   code: string;
   email: string;
   name: string | null;
@@ -86,6 +90,7 @@ export type AdminOrderRow = {
   customerName: string | null;
   ambassadorCode: string | null;
   itemCount: number;
+  ledgerCount?: number;
   subOrders: {
     id: string;
     status: string;
@@ -101,11 +106,65 @@ export type AdminOrderRow = {
   }[];
 };
 
+export type AdminOrderDetail = AdminOrderRow & {
+  ledgerEntries: {
+    id: string;
+    type: string;
+    status: string;
+    amountCents: number;
+    description: string | null;
+    createdAt: string;
+    paidAt: string | null;
+  }[];
+};
+
 export type ContentBlock = {
   key: string;
   title: string | null;
   body: Record<string, unknown>;
   updatedAt: string | null;
+};
+
+export type AdminUser = {
+  id: string;
+  email: string;
+  name: string | null;
+  role: string;
+  createdAt: string;
+  orderCount: number;
+  providerProfile: { id: string; businessName: string; approved: boolean } | null;
+  ambassadorProfile: { id: string; code: string; walletBalance: number } | null;
+};
+
+export type PayoutLedger = {
+  summary: {
+    availableCount: number;
+    availableCents: number;
+    byType: Record<string, number>;
+    flaggedProviderIds: string[];
+  };
+  available: {
+    id: string;
+    type: string;
+    status: string;
+    amountCents: number;
+    description: string | null;
+    createdAt: string;
+    orderId: string | null;
+    orderEmail: string | null;
+    ambassadorCode: string | null;
+    providerName: string | null;
+    providerId: string | null;
+  }[];
+  recentPayouts: {
+    id: string;
+    amountCents: number;
+    description: string | null;
+    paidAt: string | null;
+    orderId: string | null;
+    orderEmail: string | null;
+    ambassadorCode: string | null;
+  }[];
 };
 
 export function useAdminAnalytics() {
@@ -141,6 +200,7 @@ export function useUpdateProvider() {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["admin", "providers"] });
       void qc.invalidateQueries({ queryKey: ["admin", "analytics"] });
+      void qc.invalidateQueries({ queryKey: ["admin", "payouts"] });
     },
   });
 }
@@ -178,6 +238,33 @@ export function useUpdateCommissionTiers() {
   });
 }
 
+export function useUpdateAmbassador() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      ambassadorId: string;
+      code?: string;
+      walletAdjustCents?: number;
+    }) =>
+      fetchJson<{ ok: true }>("/api/admin/ambassadors", {
+        method: "POST",
+        body: JSON.stringify({ action: "update_ambassador", ...body }),
+      }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["admin", "ambassadors"] });
+      void qc.invalidateQueries({ queryKey: ["admin", "analytics"] });
+      void qc.invalidateQueries({ queryKey: ["admin", "payouts"] });
+    },
+  });
+}
+
+export function useAdminPayoutLedger() {
+  return useQuery({
+    queryKey: ["admin", "payouts"],
+    queryFn: () => fetchJson<PayoutLedger>("/api/admin/payouts"),
+  });
+}
+
 export function useAdminPayouts() {
   const qc = useQueryClient();
   return useMutation({
@@ -188,6 +275,20 @@ export function useAdminPayouts() {
       }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["admin"] });
+    },
+  });
+}
+
+export function useAdminUsers(params?: { role?: string; q?: string }) {
+  const qs = new URLSearchParams();
+  if (params?.role) qs.set("role", params.role);
+  if (params?.q) qs.set("q", params.q);
+  const suffix = qs.toString() ? `?${qs}` : "";
+  return useQuery({
+    queryKey: ["admin", "users", params],
+    queryFn: async () => {
+      const data = await fetchJson<{ users: AdminUser[] }>(`/api/admin/users${suffix}`);
+      return data.users;
     },
   });
 }
@@ -210,6 +311,27 @@ export function useCreateAdminUser() {
       }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["admin"] });
+    },
+  });
+}
+
+export function useUpdateAdminUser() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      userId: string;
+      name?: string | null;
+      role?: "CUSTOMER" | "PROVIDER" | "AMBASSADOR" | "ADMIN";
+      password?: string;
+    }) =>
+      fetchJson<{ ok: true }>("/api/admin/users", {
+        method: "PATCH",
+        body: JSON.stringify(body),
+      }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["admin", "users"] });
+      void qc.invalidateQueries({ queryKey: ["admin", "providers"] });
+      void qc.invalidateQueries({ queryKey: ["admin", "ambassadors"] });
     },
   });
 }
@@ -288,22 +410,55 @@ export function useDeleteAdminProduct() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) =>
-      fetchJson<{ ok: true }>(`/api/admin/products/${id}`, { method: "DELETE" }),
+      fetchJson<{ ok: true; softDeleted?: boolean; message?: string }>(
+        `/api/admin/products/${id}`,
+        { method: "DELETE" },
+      ),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["admin", "products"] });
     },
   });
 }
 
-export function useAdminOrders(status?: string) {
-  const qs = status ? `?status=${encodeURIComponent(status)}` : "";
+export function useAdminOrders(params?: { status?: string; q?: string }) {
+  const qs = new URLSearchParams();
+  if (params?.status) qs.set("status", params.status);
+  if (params?.q) qs.set("q", params.q);
+  const suffix = qs.toString() ? `?${qs}` : "";
   return useQuery({
-    queryKey: ["admin", "orders", status],
+    queryKey: ["admin", "orders", params],
     queryFn: async () => {
       const data = await fetchJson<{ orders: AdminOrderRow[]; nextCursor: string | null }>(
-        `/api/admin/orders${qs}`,
+        `/api/admin/orders${suffix}`,
       );
-      return data.orders;
+      return data;
+    },
+  });
+}
+
+export function useAdminOrderDetail(id: string | null) {
+  return useQuery({
+    queryKey: ["admin", "orders", "detail", id],
+    enabled: !!id,
+    queryFn: async () => {
+      const data = await fetchJson<{
+        order: {
+          id: string;
+          email: string;
+          status: string;
+          totalCents: number;
+          subtotalCents: number;
+          feeCents: number;
+          commissionCents: number;
+          createdAt: string;
+          user: { email: string; name: string | null } | null;
+          ambassador: { code: string } | null;
+          ambassadorCode: string | null;
+          subOrders: AdminOrderRow["subOrders"];
+          ledgerEntries: AdminOrderDetail["ledgerEntries"];
+        };
+      }>(`/api/admin/orders/${id}`);
+      return data.order;
     },
   });
 }
@@ -325,8 +480,9 @@ export function useUpdateAdminOrder() {
           subOrderStatus: body.subOrderStatus,
         }),
       }),
-    onSuccess: () => {
+    onSuccess: (_data, vars) => {
       void qc.invalidateQueries({ queryKey: ["admin", "orders"] });
+      void qc.invalidateQueries({ queryKey: ["admin", "orders", "detail", vars.id] });
       void qc.invalidateQueries({ queryKey: ["admin", "analytics"] });
     },
   });

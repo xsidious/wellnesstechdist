@@ -74,6 +74,26 @@ export async function PATCH(req: Request, ctx: Ctx) {
       where: { id },
       data: { status: body.status },
     });
+
+    if (body.status === "CANCELLED" || body.status === "REFUNDED") {
+      await prisma.ledgerEntry.updateMany({
+        where: {
+          orderId: id,
+          status: { in: ["PENDING", "AVAILABLE"] },
+        },
+        data: { status: "CANCELLED" },
+      });
+    }
+
+    if (body.status === "COMPLETED" || body.status === "FULFILLING") {
+      await prisma.ledgerEntry.updateMany({
+        where: {
+          orderId: id,
+          status: "PENDING",
+        },
+        data: { status: "AVAILABLE" },
+      });
+    }
   }
 
   await kv.del("analytics:v1");

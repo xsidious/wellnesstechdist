@@ -40,7 +40,11 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-primary/10 bg-background/80 backdrop-blur-xl">
       <div className="container-x flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center">
-          <img src="/images/wellness-tech-logo.jpeg" alt="Wellness Tech Distribution logo" className="h-10 object-contain" />
+          <img
+            src="/images/wellness-tech-logo.png"
+            alt="Wellness Tech Distribution"
+            className="h-11 w-auto max-w-[200px] object-contain object-left sm:h-12 sm:max-w-[240px]"
+          />
         </Link>
         <nav className="hidden items-center gap-8 md:flex">
           {nav.map((n) => (
