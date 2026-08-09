@@ -35,7 +35,7 @@ export function AdminAnalyticsPanel() {
       value: formatCents(data.ambassador.totalCommissionPaidCents),
     },
     {
-      label: "Active ambassadors",
+      label: "Ambassadors",
       value: String(data.ambassador.activeCount),
     },
   ];

@@ -100,9 +100,6 @@ export function AdminPayoutsPanel() {
   const payout = useAdminPayouts();
   const [editing, setEditing] = useState<CommissionTier | null>(null);
 
-  if (isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
-  if (error) return <p className="text-sm text-destructive">{error.message}</p>;
-
   const tiers = data?.tiers ?? [];
   const summary = ledger.data?.summary;
   const available = ledger.data?.available ?? [];
@@ -117,6 +114,8 @@ export function AdminPayoutsPanel() {
             Dynamic tiers by minimum order size (basis points).
           </p>
         </div>
+        {isLoading && <p className="text-sm text-muted-foreground">Loading tiers…</p>}
+        {error && <p className="text-sm text-destructive">{error.message}</p>}
         <ul className="divide-y divide-primary/10 border-t border-primary/10">
           {tiers.map((t) => (
             <li key={t.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">

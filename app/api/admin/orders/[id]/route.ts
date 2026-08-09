@@ -30,7 +30,34 @@ export async function GET(_req: Request, ctx: Ctx) {
     },
   });
   if (!order) return notFound();
-  return NextResponse.json({ order });
+  return NextResponse.json({
+    order: {
+      ...order,
+      ambassadorCode: order.ambassador?.code || order.ambassadorCode,
+      subOrders: order.subOrders.map((s) => ({
+        id: s.id,
+        status: s.status,
+        subtotalCents: s.subtotalCents,
+        providerName: s.provider.businessName,
+        items: s.items.map((i) => ({
+          id: i.id,
+          productName: i.productName,
+          variantName: i.variantName,
+          quantity: i.quantity,
+          lineTotalCents: i.lineTotalCents,
+        })),
+      })),
+      ledgerEntries: order.ledgerEntries.map((e) => ({
+        id: e.id,
+        type: e.type,
+        status: e.status,
+        amountCents: e.amountCents,
+        description: e.description,
+        createdAt: e.createdAt,
+        paidAt: e.paidAt,
+      })),
+    },
+  });
 }
 
 const patchSchema = z.object({

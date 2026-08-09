@@ -323,6 +323,9 @@ export function useUpdateAdminUser() {
       name?: string | null;
       role?: "CUSTOMER" | "PROVIDER" | "AMBASSADOR" | "ADMIN";
       password?: string;
+      businessName?: string;
+      ambassadorCode?: string;
+      approved?: boolean;
     }) =>
       fetchJson<{ ok: true }>("/api/admin/users", {
         method: "PATCH",
@@ -332,6 +335,7 @@ export function useUpdateAdminUser() {
       void qc.invalidateQueries({ queryKey: ["admin", "users"] });
       void qc.invalidateQueries({ queryKey: ["admin", "providers"] });
       void qc.invalidateQueries({ queryKey: ["admin", "ambassadors"] });
+      void qc.invalidateQueries({ queryKey: ["admin", "analytics"] });
     },
   });
 }

@@ -93,11 +93,23 @@ export async function POST(req: Request) {
   if (typeof body.approved === "boolean") data.approved = body.approved;
   if (body.stripeAccountId !== undefined) data.stripeAccountId = body.stripeAccountId;
 
-  const provider = await prisma.providerProfile.update({
+  const existing = await prisma.providerProfile.findUnique({
     where: { id: body.providerId },
-    data,
     include: { user: { select: { email: true } } },
   });
+  if (!existing) {
+    return NextResponse.json({ error: "Provider not found" }, { status: 404 });
+  }
+
+  // Avoid Prisma empty-update errors when only payoutFlag is sent
+  const provider =
+    Object.keys(data).length > 0
+      ? await prisma.providerProfile.update({
+          where: { id: body.providerId },
+          data,
+          include: { user: { select: { email: true } } },
+        })
+      : existing;
 
   if (typeof body.payoutFlag === "boolean") {
     await setProviderPayoutFlag(provider.id, body.payoutFlag);

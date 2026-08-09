@@ -122,6 +122,8 @@ function UserRow({ user }: { user: AdminUser }) {
   const [name, setName] = useState(user.name || "");
   const [role, setRole] = useState(user.role);
   const [password, setPassword] = useState("");
+  const [businessName, setBusinessName] = useState(user.providerProfile?.businessName || "");
+  const [ambassadorCode, setAmbassadorCode] = useState(user.ambassadorProfile?.code || "");
 
   return (
     <li className="border-b border-primary/10 py-3">
@@ -163,6 +165,13 @@ function UserRow({ user }: { user: AdminUser }) {
               name: name || null,
               role: role as "CUSTOMER" | "PROVIDER" | "AMBASSADOR" | "ADMIN",
               password: password || undefined,
+              businessName:
+                role === "PROVIDER"
+                  ? businessName || user.providerProfile?.businessName || undefined
+                  : undefined,
+              ambassadorCode:
+                role === "AMBASSADOR" ? ambassadorCode || undefined : undefined,
+              approved: role === "PROVIDER" ? true : undefined,
             });
             setPassword("");
           }}
@@ -192,6 +201,23 @@ function UserRow({ user }: { user: AdminUser }) {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="New password (optional)"
           />
+          {role === "PROVIDER" && (
+            <input
+              className="rounded-sm border border-input px-2 py-1.5 text-sm md:col-span-2"
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder="Practice / business name"
+              required={!user.providerProfile}
+            />
+          )}
+          {role === "AMBASSADOR" && (
+            <input
+              className="rounded-sm border border-input px-2 py-1.5 text-sm md:col-span-2"
+              value={ambassadorCode}
+              onChange={(e) => setAmbassadorCode(e.target.value)}
+              placeholder="Ambassador code (optional)"
+            />
+          )}
           <button
             type="submit"
             disabled={update.isPending}

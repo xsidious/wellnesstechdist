@@ -229,7 +229,7 @@ function ProductRow({ product }: { product: AdminProduct }) {
               id: product.id,
               name,
               category,
-              description,
+              ...(description.trim().length >= 10 ? { description: description.trim() } : {}),
               variants: variants.map((v) => ({
                 id: v.id || undefined,
                 sku: v.sku,

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 import { useState, type ReactNode } from "react";
 
 const NAV = [
@@ -13,7 +14,7 @@ const NAV = [
   { href: "/admin/users", label: "Users" },
   { href: "/admin/content", label: "Site content" },
   { href: "/admin/payouts", label: "Payouts & tiers" },
-  { href: "/shop", label: "View shop", external: true },
+  { href: "/shop", label: "View shop" },
 ] as const;
 
 function isActive(pathname: string, href: string, exact?: boolean) {
@@ -23,6 +24,7 @@ function isActive(pathname: string, href: string, exact?: boolean) {
 
 export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
 
   return (
@@ -41,20 +43,19 @@ export function AdminShell({ children }: { children: ReactNode }) {
           <Link href="/" className="font-display text-sm font-semibold text-primary">
             WTBD
           </Link>
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-accent">Admin</span>
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-accent">
+            Admin
+          </span>
         </div>
         <nav className="flex-1 space-y-0.5 overflow-y-auto p-3">
           {NAV.map((item) => {
-            const active =
-              "external" in item && item.external
-                ? false
-                : isActive(pathname, item.href, "exact" in item ? item.exact : false);
+            const active = isActive(pathname, item.href, "exact" in item ? item.exact : false);
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className={`block rounded-sm px-3 py-2.5 text-sm transition ${
+                className={`block rounded-xl px-3 py-2.5 text-sm transition ${
                   active
                     ? "bg-primary text-primary-foreground"
                     : "text-primary/75 hover:bg-primary/5 hover:text-primary"
@@ -65,10 +66,21 @@ export function AdminShell({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
-        <div className="border-t border-primary/10 p-4 text-xs text-muted-foreground">
-          <Link href="/account" className="hover:text-primary">
-            Account
+        <div className="space-y-2 border-t border-primary/10 p-4 text-xs">
+          <Link href="/" className="block text-muted-foreground hover:text-primary">
+            ← Back to site
           </Link>
+          <button
+            type="button"
+            className="block text-left font-medium text-primary hover:text-accent"
+            onClick={async () => {
+              await signOut({ redirect: false });
+              router.replace("/login");
+              router.refresh();
+            }}
+          >
+            Sign out
+          </button>
         </div>
       </aside>
 
@@ -76,7 +88,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <header className="flex h-14 items-center gap-3 border-b border-primary/10 bg-background px-4 lg:px-8">
           <button
             type="button"
-            className="rounded-sm border border-primary/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary lg:hidden"
+            className="rounded-full border border-primary/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary lg:hidden"
             onClick={() => setOpen(true)}
           >
             Menu

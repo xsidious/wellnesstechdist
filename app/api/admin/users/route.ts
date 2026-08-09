@@ -5,22 +5,24 @@ import { prisma } from "@/lib/db";
 import { requireApiSession } from "@/lib/api-auth";
 import { badRequest } from "@/lib/dashboard";
 import { kv } from "@/lib/kv";
+import type { Role } from "@prisma/client";
 
 export const runtime = "nodejs";
+
+const ROLES = ["CUSTOMER", "PROVIDER", "AMBASSADOR", "ADMIN"] as const;
 
 export async function GET(req: Request) {
   const gate = await requireApiSession(["ADMIN"]);
   if (!gate.ok) return gate.response;
 
   const { searchParams } = new URL(req.url);
-  const role = searchParams.get("role") || undefined;
+  const roleRaw = searchParams.get("role") || undefined;
+  const role = roleRaw && ROLES.includes(roleRaw as (typeof ROLES)[number]) ? roleRaw : undefined;
   const q = (searchParams.get("q") || "").trim();
 
   const users = await prisma.user.findMany({
     where: {
-      ...(role
-        ? { role: role as "ADMIN" | "PROVIDER" | "AMBASSADOR" | "CUSTOMER" }
-        : {}),
+      ...(role ? { role: role as Role } : {}),
       ...(q
         ? {
             OR: [
@@ -62,7 +64,7 @@ const createSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6).max(100),
   name: z.string().trim().min(1).max(120).optional(),
-  role: z.enum(["CUSTOMER", "PROVIDER", "AMBASSADOR", "ADMIN"]),
+  role: z.enum(ROLES),
   businessName: z.string().trim().min(2).max(200).optional(),
   approved: z.boolean().optional(),
   ambassadorCode: z.string().trim().min(2).max(40).optional(),
@@ -146,8 +148,11 @@ export async function POST(req: Request) {
 const patchSchema = z.object({
   userId: z.string().min(1),
   name: z.string().trim().min(1).max(120).nullable().optional(),
-  role: z.enum(["CUSTOMER", "PROVIDER", "AMBASSADOR", "ADMIN"]).optional(),
+  role: z.enum(ROLES).optional(),
   password: z.string().min(6).max(100).optional(),
+  businessName: z.string().trim().min(2).max(200).optional(),
+  ambassadorCode: z.string().trim().min(2).max(40).optional(),
+  approved: z.boolean().optional(),
 });
 
 export async function PATCH(req: Request) {
@@ -161,7 +166,10 @@ export async function PATCH(req: Request) {
     return badRequest("Invalid patch");
   }
 
-  const existing = await prisma.user.findUnique({ where: { id: body.userId } });
+  const existing = await prisma.user.findUnique({
+    where: { id: body.userId },
+    include: { providerProfile: true, ambassadorProfile: true },
+  });
   if (!existing) return badRequest("User not found");
 
   if (body.role && body.role !== existing.role && existing.role === "ADMIN") {
@@ -169,19 +177,78 @@ export async function PATCH(req: Request) {
     if (adminCount <= 1) return badRequest("Cannot demote the last admin");
   }
 
+  const nextRole = body.role || existing.role;
+
+  if (nextRole === "PROVIDER" && !existing.providerProfile && !body.businessName) {
+    return badRequest("businessName required when promoting to PROVIDER");
+  }
+
+  if (body.role === "AMBASSADOR" || (nextRole === "AMBASSADOR" && !existing.ambassadorProfile)) {
+    const code =
+      body.ambassadorCode?.toUpperCase().replace(/[^A-Z0-9_-]/g, "") ||
+      existing.ambassadorProfile?.code ||
+      `AMB${Date.now().toString(36).toUpperCase()}`;
+    if (code.length < 2) return badRequest("Invalid ambassador code");
+    const clash = await prisma.ambassadorProfile.findFirst({
+      where: { code, NOT: { userId: existing.id } },
+    });
+    if (clash) return badRequest("Ambassador code already in use");
+  }
+
   const data: {
     name?: string | null;
-    role?: "CUSTOMER" | "PROVIDER" | "AMBASSADOR" | "ADMIN";
+    role?: Role;
     passwordHash?: string;
   } = {};
   if (body.name !== undefined) data.name = body.name;
   if (body.role) data.role = body.role;
   if (body.password) data.passwordHash = await bcrypt.hash(body.password, 12);
 
-  const user = await prisma.user.update({
-    where: { id: body.userId },
-    data,
-    select: { id: true, email: true, name: true, role: true },
+  const user = await prisma.$transaction(async (tx) => {
+    const updated = await tx.user.update({
+      where: { id: body.userId },
+      data,
+      select: { id: true, email: true, name: true, role: true },
+    });
+
+    if (nextRole === "PROVIDER") {
+      if (existing.providerProfile) {
+        await tx.providerProfile.update({
+          where: { userId: existing.id },
+          data: {
+            ...(body.businessName ? { businessName: body.businessName } : {}),
+            ...(typeof body.approved === "boolean" ? { approved: body.approved } : {}),
+          },
+        });
+      } else {
+        await tx.providerProfile.create({
+          data: {
+            userId: existing.id,
+            businessName: body.businessName!,
+            approved: body.approved ?? false,
+          },
+        });
+      }
+    }
+
+    if (nextRole === "AMBASSADOR") {
+      const code =
+        body.ambassadorCode?.toUpperCase().replace(/[^A-Z0-9_-]/g, "") ||
+        existing.ambassadorProfile?.code ||
+        `AMB${Date.now().toString(36).toUpperCase()}`;
+      if (!existing.ambassadorProfile) {
+        await tx.ambassadorProfile.create({
+          data: { userId: existing.id, code },
+        });
+      } else if (body.ambassadorCode) {
+        await tx.ambassadorProfile.update({
+          where: { userId: existing.id },
+          data: { code },
+        });
+      }
+    }
+
+    return updated;
   });
 
   await kv.del("analytics:v1");

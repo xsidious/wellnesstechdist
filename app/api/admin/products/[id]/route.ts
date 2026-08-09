@@ -27,7 +27,14 @@ export async function GET(_req: Request, ctx: Ctx) {
 
 const patchSchema = z.object({
   name: z.string().trim().min(2).max(200).optional(),
-  description: z.string().trim().min(10).max(5000).optional(),
+  description: z
+    .string()
+    .trim()
+    .max(5000)
+    .optional()
+    .refine((v) => v === undefined || v.length === 0 || v.length >= 10, {
+      message: "Description must be at least 10 characters",
+    }),
   category: z.string().trim().min(2).max(80).optional(),
   active: z.boolean().optional(),
   variants: z
@@ -62,16 +69,23 @@ export async function PATCH(req: Request, ctx: Ctx) {
     await tx.product.update({
       where: { id },
       data: {
-        name: body.name,
-        description: body.description,
-        category: body.category,
-        active: body.active,
+        ...(body.name !== undefined ? { name: body.name } : {}),
+        ...(body.description && body.description.length >= 10
+          ? { description: body.description }
+          : {}),
+        ...(body.category !== undefined ? { category: body.category } : {}),
+        ...(body.active !== undefined ? { active: body.active } : {}),
       },
     });
 
     if (body.variants) {
       for (const v of body.variants) {
         if (v.id) {
+          const owned = await tx.productVariant.findFirst({
+            where: { id: v.id, productId: id },
+            select: { id: true },
+          });
+          if (!owned) continue;
           await tx.productVariant.update({
             where: { id: v.id },
             data: {

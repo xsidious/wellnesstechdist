@@ -32,7 +32,7 @@ export async function GET() {
 
   const paidStatuses = ["PAID", "FULFILLING", "COMPLETED"] as const;
 
-  const [gmvAgg, feeAgg, payoutAgg, ordersPaid, ambassadors, commissionPaid] =
+  const [gmvAgg, feeAgg, payoutAgg, ordersPaid, topAmbassadors, walletAgg, commissionPaid, ambCount] =
     await Promise.all([
       prisma.order.aggregate({
         where: { status: { in: [...paidStatuses] } },
@@ -54,8 +54,6 @@ export async function GET() {
         select: {
           id: true,
           code: true,
-          walletBalance: true,
-          _count: { select: { orders: true } },
           orders: {
             where: { status: { in: [...paidStatuses] } },
             select: { totalCents: true },
@@ -64,6 +62,7 @@ export async function GET() {
         orderBy: { walletBalance: "desc" },
         take: 10,
       }),
+      prisma.ambassadorProfile.aggregate({ _sum: { walletBalance: true } }),
       prisma.ledgerEntry.aggregate({
         where: {
           type: "AMBASSADOR_COMMISSION",
@@ -71,23 +70,26 @@ export async function GET() {
         },
         _sum: { amountCents: true },
       }),
+      prisma.ambassadorProfile.count(),
     ]);
 
-  const top = ambassadors.map((a) => ({
-    id: a.id,
-    code: a.code,
-    attributedGmvCents: a.orders.reduce((s, o) => s + o.totalCents, 0),
-    orders: a._count.orders,
-  }));
+  const top = topAmbassadors
+    .map((a) => ({
+      id: a.id,
+      code: a.code,
+      attributedGmvCents: a.orders.reduce((s, o) => s + o.totalCents, 0),
+      orders: a.orders.length,
+    }))
+    .sort((a, b) => b.attributedGmvCents - a.attributedGmvCents);
 
   const payload = {
     gmvCents: gmvAgg._sum.totalCents ?? 0,
     platformFeesCents: feeAgg._sum.amountCents ?? 0,
     pendingProviderPayoutsCents: payoutAgg._sum.amountCents ?? 0,
     ambassador: {
-      activeCount: await prisma.ambassadorProfile.count(),
+      activeCount: ambCount,
       totalCommissionPaidCents: commissionPaid._sum.amountCents ?? 0,
-      totalWalletCents: ambassadors.reduce((s, a) => s + a.walletBalance, 0),
+      totalWalletCents: walletAgg._sum.walletBalance ?? 0,
       top,
     },
     ordersPaid,

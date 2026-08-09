@@ -37,7 +37,8 @@ export async function GET() {
     name: a.user.name,
     walletBalanceCents: a.walletBalance,
     attributedGmvCents: a.orders.reduce((s, o) => s + o.totalCents, 0),
-    orderCount: a._count.orders,
+    // Count paid attributed orders only (matches GMV filter)
+    orderCount: a.orders.length,
     linkCount: a._count.links,
   }));
 
@@ -131,12 +132,14 @@ export async function POST(req: Request) {
   });
 
   if (typeof body.walletAdjustCents === "number" && body.walletAdjustCents !== 0) {
+    // Mark PAID so payout runs do not double-apply this adjustment.
     await prisma.ledgerEntry.create({
       data: {
         ambassadorId: amb.id,
         type: "AMBASSADOR_COMMISSION",
-        status: body.walletAdjustCents > 0 ? "AVAILABLE" : "CANCELLED",
+        status: "PAID",
         amountCents: Math.abs(body.walletAdjustCents),
+        paidAt: new Date(),
         description: `Admin wallet adjustment (${body.walletAdjustCents > 0 ? "+" : "-"}${Math.abs(body.walletAdjustCents)}¢)`,
       },
     });

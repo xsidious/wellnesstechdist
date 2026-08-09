@@ -1,9 +1,18 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireApiSession } from "@/lib/api-auth";
-import type { Prisma } from "@prisma/client";
+import type { OrderStatus, Prisma } from "@prisma/client";
 
 export const runtime = "nodejs";
+
+const ORDER_STATUSES = [
+  "PENDING",
+  "PAID",
+  "FULFILLING",
+  "COMPLETED",
+  "CANCELLED",
+  "REFUNDED",
+] as const;
 
 export async function GET(req: Request) {
   const gate = await requireApiSession(["ADMIN"]);
@@ -12,19 +21,15 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const take = Math.min(Number(searchParams.get("take") || 50), 100);
   const cursor = searchParams.get("cursor") || undefined;
-  const status = searchParams.get("status") || undefined;
+  const statusRaw = searchParams.get("status") || undefined;
+  const status =
+    statusRaw && ORDER_STATUSES.includes(statusRaw as (typeof ORDER_STATUSES)[number])
+      ? (statusRaw as OrderStatus)
+      : undefined;
   const q = (searchParams.get("q") || "").trim();
 
   const where: Prisma.OrderWhereInput = {};
-  if (status) {
-    where.status = status as
-      | "PENDING"
-      | "PAID"
-      | "FULFILLING"
-      | "COMPLETED"
-      | "CANCELLED"
-      | "REFUNDED";
-  }
+  if (status) where.status = status;
   if (q) {
     where.OR = [
       { id: { contains: q } },

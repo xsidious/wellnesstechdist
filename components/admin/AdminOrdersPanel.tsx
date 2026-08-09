@@ -16,6 +16,10 @@ function OrderDetail({ order }: { order: AdminOrderRow }) {
   const update = useUpdateAdminOrder();
   const detail = useAdminOrderDetail(order.id);
   const ledger = detail.data?.ledgerEntries ?? [];
+  const [orderStatus, setOrderStatus] = useState(order.status);
+  const [subStatuses, setSubStatuses] = useState<Record<string, string>>(() =>
+    Object.fromEntries(order.subOrders.map((s) => [s.id, s.status])),
+  );
 
   return (
     <div className="mt-3 space-y-4 rounded-sm border border-primary/10 bg-card p-4">
@@ -23,8 +27,12 @@ function OrderDetail({ order }: { order: AdminOrderRow }) {
         <span className="text-xs uppercase tracking-widest text-muted-foreground">Order status</span>
         <select
           className="rounded-sm border border-input px-2 py-1.5 text-sm"
-          defaultValue={order.status}
-          onChange={(e) => update.mutate({ id: order.id, status: e.target.value })}
+          value={orderStatus}
+          onChange={(e) => {
+            const status = e.target.value;
+            setOrderStatus(status);
+            update.mutate({ id: order.id, status });
+          }}
         >
           {ORDER_STATUSES.map((s) => (
             <option key={s} value={s}>
@@ -55,14 +63,16 @@ function OrderDetail({ order }: { order: AdminOrderRow }) {
               </div>
               <select
                 className="rounded-sm border border-input px-2 py-1.5 text-sm"
-                defaultValue={s.status}
-                onChange={(e) =>
+                value={subStatuses[s.id] || s.status}
+                onChange={(e) => {
+                  const subOrderStatus = e.target.value;
+                  setSubStatuses((prev) => ({ ...prev, [s.id]: subOrderStatus }));
                   update.mutate({
                     id: order.id,
                     subOrderId: s.id,
-                    subOrderStatus: e.target.value,
-                  })
-                }
+                    subOrderStatus,
+                  });
+                }}
               >
                 {SUB_STATUSES.map((st) => (
                   <option key={st} value={st}>
