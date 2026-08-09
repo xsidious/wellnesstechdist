@@ -82,7 +82,11 @@ export function HomeValueSection() {
             Medical spas, aesthetic clinics, concierge wellness practices, and physician groups seeking
             compliant product sourcing, staff training, and scalable digital infrastructure.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted-foreground md:text-base">
+            Schedule a demo or request a practice assessment to see how Wellness Tech Distribution can
+            supply, train, and build the technology backbone for your growth.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
             <Link
               href="/contact"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-primary-foreground shadow-[0_12px_28px_rgba(20,70,100,0.2)] transition hover:bg-primary/90"

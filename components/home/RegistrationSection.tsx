@@ -39,64 +39,72 @@ export function RegistrationSection() {
   }
 
   return (
-    <section id="register" className="bg-primary/[0.035] py-20 md:py-28">
-      <div className="container-x grid gap-10 md:grid-cols-12 md:gap-12">
-        <div className="md:col-span-5">
-          <span className="text-xs font-semibold uppercase tracking-widest text-accent">
-            Register your practice
-          </span>
-          <h2 className="mt-3 font-display text-3xl font-semibold text-primary md:text-4xl">
-            Unlock catalog access and onboarding.
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            Tell us about your practice and we&apos;ll follow up with pricing, formulary access, and
-            onboarding for exosomes, peptides, GLP-1s, and aesthetic devices.
-          </p>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Prefer a full account?{" "}
-            <Link
-              href="/register?role=PROVIDER"
-              className="font-medium text-primary underline-offset-4 hover:underline"
-            >
-              Create a provider login
-            </Link>{" "}
-            or{" "}
-            <Link href="/affiliates" className="font-medium text-primary underline-offset-4 hover:underline">
-              apply as an affiliate
-            </Link>
-            .
-          </p>
+    <section id="register" className="px-3 py-6 md:py-8">
+      <div className="container-x">
+        <div className="overflow-hidden rounded-3xl border border-primary/10 bg-white shadow-[0_18px_50px_rgba(15,40,60,0.06)]">
+          <div className="border-b border-primary/10 bg-primary/[0.03] px-5 py-5 md:px-7 md:py-6">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div className="max-w-2xl">
+                <span className="text-xs font-semibold uppercase tracking-widest text-accent">
+                  Register your practice
+                </span>
+                <h2 className="mt-2 font-display text-2xl font-semibold text-primary md:text-3xl">
+                  Get connected to our practitioner network.
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  Tell us about your practice and we&apos;ll follow up with catalog access, pricing, and
+                  onboarding for exosomes, peptides, GLP-1s, and aesthetic devices. Registration unlocks
+                  the practitioner resources and download library on this device.
+                </p>
+              </div>
+              <p className="shrink-0 text-xs text-muted-foreground md:max-w-[220px] md:text-right">
+                Prefer a full account?{" "}
+                <Link
+                  href="/register?role=PROVIDER"
+                  className="font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  Provider login
+                </Link>{" "}
+                ·{" "}
+                <Link
+                  href="/affiliates"
+                  className="font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  Affiliate
+                </Link>
+              </p>
+            </div>
+          </div>
+
+          <form onSubmit={onSubmit} className="px-5 py-5 md:px-7 md:py-6">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <RField name="name" label="Your name" error={errs.name} />
+              <RField name="practice" label="Name of practice" error={errs.practice} />
+              <RField name="phone" label="Phone number" type="tel" error={errs.phone} />
+              <RField
+                name="address"
+                label="Practice address"
+                error={errs.address}
+                className="sm:col-span-2 lg:col-span-3"
+              />
+              <RField name="referral" label="How did you hear about us?" error={errs.referral} />
+              <RField name="referredBy" label="Referred by (optional)" error={errs.referredBy} />
+              <div className="flex items-end">
+                <button
+                  type="submit"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-primary-foreground shadow-[0_10px_24px_rgba(20,70,100,0.18)] transition hover:bg-primary/90"
+                >
+                  Register practice <ArrowUpRight className="size-3.5" />
+                </button>
+              </div>
+            </div>
+            {status === "ok" && (
+              <p className="mt-4 rounded-xl bg-accent/15 px-4 py-2.5 text-sm text-accent-foreground">
+                Thanks — your registration was received. We&apos;ll be in touch shortly.
+              </p>
+            )}
+          </form>
         </div>
-        <form
-          onSubmit={onSubmit}
-          className="md:col-span-7 rounded-3xl border border-primary/10 bg-white/95 p-7 shadow-[0_18px_50px_rgba(15,40,60,0.06)] md:p-9"
-        >
-          <div className="grid gap-5 md:grid-cols-2">
-            <RField name="name" label="Your name" error={errs.name} />
-            <RField name="practice" label="Name of practice" error={errs.practice} />
-          </div>
-          <div className="mt-5">
-            <RField name="address" label="Practice address" error={errs.address} />
-          </div>
-          <div className="mt-5 grid gap-5 md:grid-cols-2">
-            <RField name="phone" label="Phone number" type="tel" error={errs.phone} />
-            <RField name="referral" label="How did you hear about us?" error={errs.referral} />
-          </div>
-          <div className="mt-5">
-            <RField name="referredBy" label="Referred by (optional)" error={errs.referredBy} />
-          </div>
-          {status === "ok" && (
-            <p className="mt-4 rounded-2xl bg-accent/15 px-4 py-3 text-sm text-accent-foreground">
-              Thanks — your registration was received. We&apos;ll be in touch shortly.
-            </p>
-          )}
-          <button
-            type="submit"
-            className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-primary-foreground shadow-[0_12px_28px_rgba(20,70,100,0.2)] transition hover:bg-primary/90"
-          >
-            Register practice <ArrowUpRight className="size-4" />
-          </button>
-        </form>
       </div>
     </section>
   );
@@ -107,22 +115,26 @@ function RField({
   label,
   type = "text",
   error,
+  className = "",
 }: {
   name: string;
   label: string;
   type?: string;
   error?: string;
+  className?: string;
 }) {
   return (
-    <label className="block">
-      <span className="text-xs font-semibold uppercase tracking-widest text-primary/70">{label}</span>
+    <label className={`block ${className}`}>
+      <span className="text-[10px] font-semibold uppercase tracking-widest text-primary/60">
+        {label}
+      </span>
       <input
         name={name}
         type={type}
         maxLength={255}
-        className="mt-2 w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/40"
+        className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none transition focus:border-primary/40"
       />
-      {error && <span className="mt-1 block text-xs text-destructive">{error}</span>}
+      {error && <span className="mt-0.5 block text-[11px] text-destructive">{error}</span>}
     </label>
   );
 }

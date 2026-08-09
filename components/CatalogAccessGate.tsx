@@ -15,7 +15,14 @@ const schema = z.object({
   agree: z.literal("on", { message: "You must confirm" }),
 });
 
-export function CatalogAccessGate({ source = "catalog" }: { source?: string }) {
+export function CatalogAccessGate({
+  source = "catalog",
+  embedded = false,
+}: {
+  source?: string;
+  /** Compact layout when nested inside another panel */
+  embedded?: boolean;
+}) {
   const [errs, setErrs] = useState<Record<string, string>>({});
   const track = useTrackEvent();
 
@@ -41,58 +48,62 @@ export function CatalogAccessGate({ source = "catalog" }: { source?: string }) {
     grantAccess("practitioner", parsed.data.name);
   }
 
+  const shell = embedded
+    ? "w-full"
+    : "mx-auto w-full max-w-xl rounded-3xl border border-primary/10 bg-white p-5 shadow-[0_16px_40px_rgba(15,40,60,0.06)] sm:p-6";
+
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="rounded-sm border border-primary/10 bg-card p-8 md:p-10">
-        <div className="flex items-center gap-3">
-          <Lock className="size-5 text-accent" />
-          <h2 className="font-display text-2xl font-semibold text-primary">Request catalog access</h2>
-        </div>
-        <p className="mt-3 text-sm text-muted-foreground">
-          The Compounded Therapies catalog and product list are restricted. Complete the short intake
-          form below to unlock access on this device.
-        </p>
-
-        <form onSubmit={onSubmit} className="mt-6 grid gap-5">
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Field name="name" label="Full name" error={errs.name} />
-            <Field name="business" label="Business name" error={errs.business} />
-            <Field name="phone" label="Phone" type="tel" error={errs.phone} />
-            <Field name="email" label="Email" type="email" error={errs.email} />
-          </div>
-
-          <label className="flex items-start gap-2 text-xs text-primary/80">
-            <input type="checkbox" name="agree" className="mt-1 accent-accent" />
-            <span>
-              I confirm the information above is accurate and I will use the catalog and product list
-              in compliance with applicable state and federal regulations.
-            </span>
-          </label>
-          {errs.agree && <span className="text-xs text-destructive">{errs.agree}</span>}
-
-          <button
-            type="submit"
-            className="inline-flex items-center justify-center gap-2 rounded-sm bg-primary px-6 py-3.5 text-sm font-semibold uppercase tracking-wider text-primary-foreground transition hover:bg-primary/90"
-          >
-            <ShieldCheck className="size-4" /> Unlock catalog
-          </button>
-        </form>
-
-        <div className="mt-6 border-t border-primary/10 pt-6 text-center text-xs text-muted-foreground">
-          Not registered yet?{" "}
-          <Link
-            href="/register?role=PROVIDER"
-            className="inline-flex items-center gap-1 text-accent hover:underline"
-          >
-            Become a Prescriber <ArrowUpRight className="size-3" />
-          </Link>{" "}
-          or{" "}
-          <Link href="/affiliates" className="text-accent hover:underline">
-            Become an Affiliate
-          </Link>
-          .
+    <div className={shell}>
+      <div className="flex items-start gap-2.5">
+        <span className="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-accent/20 text-accent-foreground">
+          <Lock className="size-3.5" />
+        </span>
+        <div className="min-w-0">
+          <h2 className="font-display text-lg font-semibold text-primary">Request catalog access</h2>
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+            Restricted practitioner materials — unlock access on this device with a short intake.
+          </p>
         </div>
       </div>
+
+      <form onSubmit={onSubmit} className="mt-4 grid gap-3">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Field name="name" label="Full name" error={errs.name} />
+          <Field name="business" label="Business name" error={errs.business} />
+          <Field name="phone" label="Phone" type="tel" error={errs.phone} />
+          <Field name="email" label="Email" type="email" error={errs.email} />
+        </div>
+
+        <label className="flex items-start gap-2 rounded-xl bg-primary/[0.03] px-3 py-2.5 text-[11px] leading-snug text-primary/80">
+          <input type="checkbox" name="agree" className="mt-0.5 accent-accent" />
+          <span>
+            I confirm this information is accurate and I will use the catalog in compliance with
+            applicable regulations.
+          </span>
+        </label>
+        {errs.agree && <span className="text-xs text-destructive">{errs.agree}</span>}
+
+        <button
+          type="submit"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-primary-foreground transition hover:bg-primary/90"
+        >
+          <ShieldCheck className="size-3.5" /> Unlock catalog
+        </button>
+      </form>
+
+      <p className="mt-3 text-center text-[11px] text-muted-foreground">
+        Not registered?{" "}
+        <Link
+          href="/register?role=PROVIDER"
+          className="inline-flex items-center gap-0.5 font-medium text-accent hover:underline"
+        >
+          Become a Prescriber <ArrowUpRight className="size-3" />
+        </Link>{" "}
+        or{" "}
+        <Link href="/affiliates" className="font-medium text-accent hover:underline">
+          Affiliate
+        </Link>
+      </p>
     </div>
   );
 }
@@ -110,14 +121,16 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="text-xs font-semibold uppercase tracking-widest text-primary/70">{label}</span>
+      <span className="text-[10px] font-semibold uppercase tracking-widest text-primary/60">
+        {label}
+      </span>
       <input
         name={name}
         type={type}
         maxLength={255}
-        className="mt-2 w-full rounded-sm border border-input bg-background px-3 py-2.5 text-sm outline-none focus:border-accent"
+        className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none transition focus:border-primary/40"
       />
-      {error && <span className="mt-1 block text-xs text-destructive">{error}</span>}
+      {error && <span className="mt-0.5 block text-[11px] text-destructive">{error}</span>}
     </label>
   );
 }
