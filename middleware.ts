@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
+import NextAuth from "next-auth";
+import { authConfig } from "@/lib/auth.config";
 
 export const AMB_COOKIE = "wt_amb_ref";
 
-export async function middleware(request: NextRequest) {
+const { auth } = NextAuth(authConfig);
+
+export default auth((request) => {
   const { pathname, searchParams } = request.nextUrl;
   const response = NextResponse.next();
 
@@ -28,35 +30,30 @@ export async function middleware(request: NextRequest) {
 
   if (!isDashboard) return response;
 
-  const token = await getToken({
-    req: request,
-    secret: process.env.AUTH_SECRET,
-  });
-
-  if (!token) {
-    const login = new URL("/login", request.url);
+  if (!request.auth?.user) {
+    const login = new URL("/login", request.nextUrl.origin);
     login.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(login);
   }
 
-  const role = token.role as string | undefined;
+  const role = request.auth.user.role as string | undefined;
 
   if (pathname.startsWith("/admin") && role !== "ADMIN") {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/", request.nextUrl.origin));
   }
   if (pathname.startsWith("/provider") && role !== "PROVIDER" && role !== "ADMIN") {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/", request.nextUrl.origin));
   }
   if (
     pathname.startsWith("/ambassador") &&
     role !== "AMBASSADOR" &&
     role !== "ADMIN"
   ) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/", request.nextUrl.origin));
   }
 
   return response;
-}
+});
 
 export const config = {
   matcher: [
