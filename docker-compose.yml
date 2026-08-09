@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: wt-postgres
+    environment:
+      POSTGRES_USER: wellness
+      POSTGRES_PASSWORD: wellness
+      POSTGRES_DB: wellness
+    volumes:
+      - wt_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wellness -d wellness"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+    # No host port — app reaches Postgres on the Docker network only.
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wt-app
+    ports:
+      - "3080:3000"
+    environment:
+      DATABASE_URL: postgresql://wellness:wellness@db:5432/wellness?schema=public
+      PRISMA_USE_NEON: "0"
+      AUTH_SECRET: docker-dev-auth-secret-wellness-tech-32b
+      AUTH_TRUST_HOST: "true"
+      NEXTAUTH_URL: http://localhost:3080
+      NEXT_PUBLIC_APP_URL: http://localhost:3080
+      SEED_ADMIN_EMAIL: admin@wellnesstech.local
+      SEED_ADMIN_PASSWORD: Demo1234!
+      SEED_DEMO_PASSWORD: Demo1234!
+      PLATFORM_FEE_BPS: "1000"
+    depends_on:
+      db:
+        condition: service_healthy
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        set -e
+        echo "[boot] prisma db push..."
+        npx prisma db push --skip-generate
+        echo "[boot] seed..."
+        npx tsx prisma/seed.ts
+        echo "[boot] start"
+        exec node server.js
+    restart: unless-stopped
+
+volumes:
+  wt_pgdata:

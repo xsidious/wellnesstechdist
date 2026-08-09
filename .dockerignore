@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.cursor
+src
+.wrangler
+.dev.vars
+.env
+.env.*
+!.env.example
+*.log
+npm-debug.log*
+public/videos
+**/*.mp4
+**/*.mov
+**/*.webm
