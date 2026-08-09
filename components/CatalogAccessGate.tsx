@@ -81,7 +81,7 @@ export function CatalogAccessGate({ source = "catalog" }: { source?: string }) {
         <div className="mt-6 border-t border-primary/10 pt-6 text-center text-xs text-muted-foreground">
           Not registered yet?{" "}
           <Link
-            href="/prescribers"
+            href="/register?role=PROVIDER"
             className="inline-flex items-center gap-1 text-accent hover:underline"
           >
             Become a Prescriber <ArrowUpRight className="size-3" />

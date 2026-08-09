@@ -43,7 +43,7 @@ export function SiteFooter() {
           <ul className="mt-4 space-y-2 text-sm text-primary-foreground/85">
             <li><Link to="/products" onClick={() => track("catalog_nav_click", "footer_products")}>Products</Link></li>
             <li><Link to="/affiliates">Affiliates</Link></li>
-            <li><a href="https://www.prescribeusa.com/register?role=provider&ref=cmp4iqnah00ci10n0xxewcr9x" target="_blank" rel="noopener noreferrer" className="text-accent">Become a Prescriber</a></li>
+            <li><a href="/register?role=PROVIDER" target="_blank" rel="noopener noreferrer" className="text-accent">Become a Prescriber</a></li>
             <li><Link to="/compliance">503A / 503B</Link></li>
             <li><Link to="/contact">Contact</Link></li>
           </ul>

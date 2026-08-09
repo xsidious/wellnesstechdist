@@ -3,11 +3,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Wellness Tech Bio Distribution — Compounded Rx Resource for Practitioners",
-    template: "%s — Wellness Tech Bio Distribution",
+    default: "Wellness Tech Distribution — Compounded Therapies & Clinical Platform",
+    template: "%s — Wellness Tech Distribution",
   },
   description:
-    "503A & 503B compounded GLP-1s, peptides, NAD+ and hormone therapy resource for licensed physicians, medical practices, and accredited sales affiliates.",
+    "Wellness Tech Distribution partners with licensed physicians and medical practices to deliver compounded peptide therapies, GLP-1 products, Korean exosomes, aesthetic devices, and an end-to-end B2B clinical platform.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

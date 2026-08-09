@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { Search, ArrowUpRight, FileDown } from "lucide-react";
 import {
   COMPOUNDED_CATALOG,
@@ -10,8 +11,6 @@ import {
 } from "@/lib/catalog/compounded-catalog";
 import { useTrackEvent } from "@/lib/useTrackEvent";
 
-const PRESCRIBER_URL =
-  "https://www.prescribeusa.com/register?role=provider&ref=cmp4iqnah00ci10n0xxewcr9x";
 const SALES_SHEET = "/docs/Compounded_Wellness_Sales_Sheet.pdf";
 
 function ProductRow({ product }: { product: CatalogProduct }) {
@@ -163,15 +162,13 @@ export function CompoundedCatalog({
           Ready to offer these therapies in your practice? Licensed practitioners can register for
           prescribing access and start ordering today.
         </p>
-        <a
-          href={PRESCRIBER_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          href="/register?role=PROVIDER"
           onClick={() => track("catalog_prescriber_cta_click", source)}
           className="mt-4 inline-flex items-center justify-center gap-2 rounded-sm bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-wider text-primary-foreground transition hover:bg-primary/90"
         >
           Become a Prescriber <ArrowUpRight className="size-4" />
-        </a>
+        </Link>
       </div>
     </div>
   );

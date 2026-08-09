@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { z } from "zod";
 import { ArrowUpRight, Mail, Phone, MapPin, PhoneCall } from "lucide-react";
-
-const PRESCRIBER_URL =
-  "https://www.prescribeusa.com/register?role=provider&ref=cmp4iqnah00ci10n0xxewcr9x";
 
 const callSchema = z.object({
   name: z.string().trim().min(2).max(100),
@@ -137,16 +135,15 @@ export function ContactContent({
           <div className="text-center">
             <h2 className="font-display text-2xl font-semibold text-primary">Register your practice</h2>
             <p className="mt-2 max-w-md text-sm text-muted-foreground">
-              Create your prescriber account through our partner portal to get verified and start ordering.
+              Create your Wellness Tech account, look up your NPI, and our team will verify and approve
+              prescribing access.
             </p>
-            <a
-              href={PRESCRIBER_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/register?role=PROVIDER"
               className="mt-6 inline-flex items-center justify-center gap-2 rounded-sm bg-primary px-6 py-3.5 text-sm font-semibold uppercase tracking-wider text-primary-foreground transition hover:bg-primary/90"
             >
               Register now <ArrowUpRight className="size-4" />
-            </a>
+            </Link>
           </div>
         </div>
       </section>

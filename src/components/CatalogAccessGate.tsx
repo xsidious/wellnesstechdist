@@ -68,7 +68,7 @@ export function CatalogAccessGate({ source = "catalog" }: { source?: string }) {
 
         <div className="mt-6 border-t border-primary/10 pt-6 text-center text-xs text-muted-foreground">
           Not registered yet?{" "}
-          <a href="https://www.prescribeusa.com/register?role=provider&ref=cmp4iqnah00ci10n0xxewcr9x" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-accent hover:underline">
+          <a href="/register?role=PROVIDER" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-accent hover:underline">
             Become a Prescriber <ArrowUpRight className="size-3" />
           </a>{" "}
           or{" "}

@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
-  ArrowUpRight,
   ShieldCheck,
   Stethoscope,
   Users,
@@ -11,11 +9,12 @@ import {
   BadgeDollarSign,
   Cpu,
 } from "lucide-react";
-import { CatalogEmbed } from "@/components/CatalogEmbed";
 import { DownloadsSection } from "@/components/home/DownloadsSection";
 import { ResourcesSection } from "@/components/home/ResourcesSection";
 import { RegistrationSection } from "@/components/home/RegistrationSection";
 import { HomeHero } from "@/components/home/HomeHero";
+import { HomeValueSection } from "@/components/home/HomeValueSection";
+import { HomeVerticalsSection } from "@/components/home/HomeVerticalsSection";
 import { HomeCtaBand } from "@/components/home/HomeCtaBand";
 
 export const metadata: Metadata = {
@@ -33,92 +32,9 @@ export default function HomePage() {
     <>
       <HomeHero />
 
-      <section id="catalog" className="container-x py-24 md:py-32">
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <span className="text-xs font-semibold uppercase tracking-widest text-accent">
-              Therapeutic verticals
-            </span>
-            <h2 className="mt-3 max-w-2xl font-display text-4xl font-semibold text-primary md:text-5xl">
-              Compounded Rx & high quality cosmetic grade Korean exosomes. One standard of quality.
-            </h2>
-          </div>
-        </div>
-        <div className="mt-14">
-          <CatalogEmbed />
-        </div>
-      </section>
+      <HomeValueSection />
 
-      <section className="container-x py-24 md:py-32">
-        <div className="grid gap-12 md:grid-cols-12 md:items-center">
-          <div className="md:col-span-6 overflow-hidden rounded-sm border border-primary/10 bg-black">
-            <img
-              src="/images/cellexosome-black-label.png"
-              alt="CellExosome Black Label — Korean stem cell exosome skin booster"
-              width={1200}
-              height={1800}
-              loading="lazy"
-              className="h-72 w-full object-contain md:h-[28rem]"
-            />
-          </div>
-          <div className="md:col-span-6">
-            <span className="text-xs font-semibold uppercase tracking-widest text-accent">
-              New — Now available
-            </span>
-            <h2 className="mt-3 font-display text-4xl font-semibold text-primary md:text-5xl">
-              high quality cosmetic grade Korean exosomes for regenerative aesthetics.
-            </h2>
-            <p className="mt-5 text-muted-foreground">
-              Lyophilized exosome boosters, stem-cell serums and AAPE systems from leading Korean biotech
-              labs — now distributed alongside our compounded Rx catalog. Two clinical lines for distinct
-              indications:
-            </p>
-            <ul className="mt-6 space-y-3 text-sm">
-              <li className="flex gap-3">
-                <span className="mt-1 inline-block size-2 rounded-full bg-accent" />
-                <span>
-                  <strong className="text-primary">SX Series</strong> —{" "}
-                  <span className="text-muted-foreground">
-                    Human-derived exosomes. Stem-cell rejuvenation for mature or photo-aged skin.
-                  </span>
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="mt-1 inline-block size-2 rounded-full bg-accent" />
-                <span>
-                  <strong className="text-primary">PX Series</strong> —{" "}
-                  <span className="text-muted-foreground">
-                    Plant-derived exosomes. Daily aesthetic refinement — pore, oil balance and calming.
-                  </span>
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="mt-1 inline-block size-2 rounded-full bg-accent" />
-                <span>
-                  <strong className="text-primary">Black Label & Hair</strong> —{" "}
-                  <span className="text-muted-foreground">
-                    Microneedling, scalp and post-procedure protocols.
-                  </span>
-                </span>
-              </li>
-            </ul>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/exosomes"
-                className="inline-flex items-center gap-2 rounded-sm bg-primary px-6 py-3.5 text-sm font-semibold uppercase tracking-wider text-primary-foreground hover:bg-primary/90"
-              >
-                Explore exosomes <ArrowUpRight className="size-4" />
-              </Link>
-              <Link
-                href="/exosomes"
-                className="inline-flex items-center gap-2 rounded-sm border border-primary/30 px-6 py-3.5 text-sm font-semibold uppercase tracking-wider text-primary hover:border-accent hover:text-accent"
-              >
-                Register to order
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HomeVerticalsSection />
 
       <section className="bg-primary/5 py-24 md:py-32">
         <div className="container-x">

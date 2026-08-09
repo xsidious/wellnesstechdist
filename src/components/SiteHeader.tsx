@@ -15,7 +15,7 @@ const nav = [
 function PrescriberLink({ className }: { className?: string }) {
   return (
     <a
-      href="https://www.prescribeusa.com/register?role=provider&ref=cmp4iqnah00ci10n0xxewcr9x"
+      href="/register?role=PROVIDER"
       target="_blank"
       rel="noopener noreferrer"
       className={className}
@@ -90,7 +90,7 @@ export function SiteHeader() {
               </Link>
             ))}
             <a
-              href="https://www.prescribeusa.com/register?role=provider&ref=cmp4iqnah00ci10n0xxewcr9x"
+              href="/register?role=PROVIDER"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setOpen(false)}

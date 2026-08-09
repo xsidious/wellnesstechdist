@@ -45,6 +45,9 @@ export function SiteFooter() {
           <h4 className="text-xs font-semibold uppercase tracking-widest text-accent">Company</h4>
           <ul className="mt-4 space-y-2 text-sm text-primary-foreground/85">
             <li>
+              <Link href="/about">About</Link>
+            </li>
+            <li>
               <Link href="/products">Products</Link>
             </li>
             <li>
@@ -54,7 +57,7 @@ export function SiteFooter() {
               <Link href="/supplies">Supplies</Link>
             </li>
             <li>
-              <Link href="/prescribers">Prescribers</Link>
+              <Link href="/register?role=PROVIDER">Become a Prescriber</Link>
             </li>
             <li>
               <Link href="/affiliates">Affiliates</Link>

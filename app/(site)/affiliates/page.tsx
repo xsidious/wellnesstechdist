@@ -123,7 +123,7 @@ export default function AffiliatesPage() {
             <p className="mt-4 text-sm text-primary-foreground/80">
               Are you a licensed prescriber?{" "}
               <Link
-                href="/prescribers"
+                href="/register?role=PROVIDER"
                 className="text-accent underline underline-offset-4 transition hover:text-accent/80"
               >
                 Become a prescriber here
@@ -148,16 +148,6 @@ export default function AffiliatesPage() {
       </section>
 
       <section className="container-x py-24">
-        <div className="mb-16 overflow-hidden rounded-sm border border-primary/10">
-          <img
-            src="/images/business-professionals.jpg"
-            alt="Network of medical aesthetic practitioners and business professionals"
-            width={1280}
-            height={896}
-            loading="lazy"
-            className="h-64 w-full object-cover md:h-96"
-          />
-        </div>
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {benefits.map((b) => (
             <div key={b.title}>

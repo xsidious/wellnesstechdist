@@ -17,7 +17,7 @@ export const Route = createFileRoute("/prescribers")({
   component: Prescribers,
 });
 
-const PRESCRIBES_URL = "https://www.prescribeusa.com/register?role=provider&ref=cmp4iqnah00ci10n0xxewcr9x";
+const PRESCRIBES_URL = "/register?role=PROVIDER";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Required").max(100),
@@ -166,7 +166,7 @@ function Prescribers() {
             disabled={submitting}
             className="mt-6 inline-flex items-center justify-center gap-2 rounded-sm bg-accent px-6 py-3.5 text-sm font-semibold uppercase tracking-wider text-accent-foreground transition hover:bg-gold-soft disabled:opacity-70"
           >
-            {submitting ? "Redirecting to partner portal…" : <>Submit & continue registration <ArrowUpRight className="size-4" /></>}
+            {submitting ? "Continuing to registration…" : <>Submit & continue registration <ArrowUpRight className="size-4" /></>}
           </button>
           {blocked && (
             <div className="mt-4 rounded-sm border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
@@ -176,7 +176,7 @@ function Prescribers() {
           {submitting && (
             <p className="mt-3 text-xs text-muted-foreground">
               If you are not redirected,{" "}
-              <a href={PRESCRIBES_URL} className="text-accent underline underline-offset-4">click here to continue to the partner portal</a>.
+              <a href={PRESCRIBES_URL} className="text-accent underline underline-offset-4">click here to continue registration</a>.
             </p>
           )}
         </form>

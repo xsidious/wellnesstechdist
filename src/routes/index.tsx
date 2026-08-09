@@ -37,9 +37,14 @@ function Home() {
             <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] md:text-7xl">
               Precision <span className="italic text-accent">peptides</span>, exosomes & aesthetic equipment for physicians, MedSpa, Aesthetic practitioners and Clinics.
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-primary-foreground/90">
-              Wellness Tech Bio Distribution is a trusted resource for pharmaceutical-grade compounded peptide therapies, GLP-1 products, high quality cosmetic grade Korean exosomes, clinical aesthetic equipment, and medical-grade beauty and wellness equipment and education — connecting licensed physicians and medical practices with verified 503A/503B compounding partners and device manufacturers to deliver individualized, evidence-informed, results-focused medicine. Wellness Tech specializes in teaching practitioners how to best utilize their equipment and products through comprehensive educational programs designed to maximize clinical outcomes and increase return on investment.
-            </p>
+            <div className="mt-6 max-w-2xl space-y-4 text-base leading-relaxed text-primary-foreground/90 md:text-lg">
+              <p>
+                Wellness Tech Distribution partners with licensed physicians and medical practices to deliver pharmaceutical‑grade compounded peptide therapies, GLP‑1 products, cosmetic‑grade Korean exosomes, clinical aesthetic devices, and medical‑grade beauty &amp; wellness equipment. We verify 503A/503B compounding partners and device manufacturers, handle procurement and distribution, and provide clinician‑focused education so teams learn to use products and devices safely and effectively.
+              </p>
+              <p>
+                Built on a secure, Next.js-based B2B platform hosted on private VPS infrastructure, we offer enterprise‑grade security, advanced third‑party integrations, highly customizable workflows, and automation that streamline onboarding, scheduling, inventory, documentation, reporting and billing. More than software, we deliver an end‑to‑end business ecosystem—implementation, ongoing support, and strategic partnership—so practices can scale, improve outcomes, and boost ROI.
+              </p>
+            </div>
             <div className="mt-10 flex flex-wrap gap-3">
               <a href="#catalog" className="group inline-flex items-center gap-2 rounded-sm bg-accent px-6 py-3.5 text-sm font-semibold uppercase tracking-wider text-accent-foreground transition hover:bg-gold-soft">
                 Browse Compounded Therapies <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -47,9 +52,9 @@ function Home() {
               <Link to="/affiliates" className="inline-flex items-center gap-2 rounded-sm border border-primary-foreground/50 px-6 py-3.5 text-sm font-semibold uppercase tracking-wider transition hover:bg-primary-foreground/10">
                 Become an Affiliate
               </Link>
-              <a href="https://www.prescribeusa.com/register?role=provider&ref=cmp4iqnah00ci10n0xxewcr9x" target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-2 rounded-sm border border-accent/40 px-6 py-3.5 text-sm font-semibold uppercase tracking-wider text-accent transition hover:bg-accent/10">
+              <Link to="/register?role=PROVIDER" className="group inline-flex items-center gap-2 rounded-sm border border-accent/40 px-6 py-3.5 text-sm font-semibold uppercase tracking-wider text-accent transition hover:bg-accent/10">
                 Become a Prescriber <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
+              </Link>
             </div>
           </div>
         </div>

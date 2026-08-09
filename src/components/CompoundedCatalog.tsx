@@ -9,7 +9,7 @@ import {
 import { useTrackEvent } from '@/lib/useTrackEvent'
 
 const PRESCRIBER_URL =
-  'https://www.prescribeusa.com/register?role=provider&ref=cmp4iqnah00ci10n0xxewcr9x'
+  '/register?role=PROVIDER'
 const SALES_SHEET = '/docs/Compounded_Wellness_Sales_Sheet.pdf'
 
 function ProductRow({ product }: { product: CatalogProduct }) {

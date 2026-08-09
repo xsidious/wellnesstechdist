@@ -4,7 +4,8 @@ import { SignupForm } from "@/components/register/SignupForm";
 
 export const metadata: Metadata = {
   title: "Create account",
-  description: "Register as a provider or ambassador with Wellness Tech Bio Distribution.",
+  description:
+    "Register as a provider or ambassador with Wellness Tech Distribution. Providers verify NPI for approval.",
 };
 
 type SearchParams = Promise<{ role?: string; error?: string }>;

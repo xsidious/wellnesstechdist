@@ -85,7 +85,7 @@ function Affiliates() {
             <div className="mt-8 overflow-hidden rounded-sm border border-accent/30">
               <img src={businessProfessionals} alt="Wellness Tech Bio Distribution business professionals" width={1280} height={896} loading="lazy" className="h-56 w-full object-cover md:h-72" />
             </div>
-            <p className="mt-4 text-sm text-primary-foreground/80">Are you a licensed prescriber? <a href="https://www.prescribeusa.com/register?role=provider&ref=cmp4iqnah00ci10n0xxewcr9x" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-4 transition hover:text-accent/80">Become a prescriber here</a>.</p>
+            <p className="mt-4 text-sm text-primary-foreground/80">Are you a licensed prescriber? <a href="/register?role=PROVIDER" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-4 transition hover:text-accent/80">Become a prescriber here</a>.</p>
           </div>
           <div className="md:col-span-5">
             <div className="rounded-sm border border-accent/30 bg-primary/40 p-8 backdrop-blur">
@@ -104,9 +104,6 @@ function Affiliates() {
       </section>
 
       <section className="container-x py-24">
-        <div className="mb-16 overflow-hidden rounded-sm border border-primary/10">
-          <img src={businessProfessionals} alt="Network of medical aesthetic practitioners and business professionals" width={1280} height={896} loading="lazy" className="h-64 w-full object-cover md:h-96" />
-        </div>
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {benefits.map((b) => (
             <div key={b.title}>

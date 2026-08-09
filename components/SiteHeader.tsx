@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 
 const nav = [
   { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
   { href: "/products", label: "Compounded Therapies" },
   { href: "/exosomes", label: "Exosomes" },
   { href: "/shop", label: "Shop" },
@@ -40,16 +41,25 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const dash = user ? dashboardForRole(user.role) : null;
+  const homeCompact = pathname === "/";
 
   return (
     <header className="sticky top-0 z-50 border-b border-primary/10 bg-background/80 backdrop-blur-xl">
-      <div className="container-x flex h-16 items-center justify-between">
+      <div
+        className={`container-x flex items-center justify-between ${
+          homeCompact ? "h-12" : "h-16"
+        }`}
+      >
         <Link href="/" className="flex shrink-0 items-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/wellness-tech-logo.png"
             alt="Wellness Tech Distribution"
-            className="h-11 w-auto max-w-[200px] object-contain object-left sm:h-12 sm:max-w-[240px]"
+            className={
+              homeCompact
+                ? "h-7 w-auto max-w-[150px] object-contain object-left sm:h-8 sm:max-w-[170px]"
+                : "h-11 w-auto max-w-[200px] object-contain object-left sm:h-12 sm:max-w-[240px]"
+            }
           />
         </Link>
         <nav className="hidden items-center gap-6 lg:flex">
@@ -64,6 +74,16 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
               {n.label}
             </Link>
           ))}
+          <Link
+            href="/register?role=PROVIDER"
+            className={`text-sm font-medium transition-colors hover:text-accent/80 ${
+              pathname.startsWith("/register") || pathname.startsWith("/prescribers")
+                ? "text-accent"
+                : "text-accent"
+            }`}
+          >
+            Become a Prescriber
+          </Link>
           <Link
             href="/affiliates"
             className={`text-sm font-medium transition-colors hover:text-accent/80 ${
@@ -116,6 +136,13 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
                 {n.label}
               </Link>
             ))}
+            <Link
+              href="/register?role=PROVIDER"
+              onClick={() => setOpen(false)}
+              className="px-2 py-2 text-sm text-accent"
+            >
+              Become a Prescriber
+            </Link>
             <Link
               href="/affiliates"
               onClick={() => setOpen(false)}

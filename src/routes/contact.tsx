@@ -19,7 +19,7 @@ export const Route = createFileRoute("/contact")({
   component: Contact,
 });
 
-const PRESCRIBER_URL = "https://www.prescribeusa.com/register?role=provider&ref=cmp4iqnah00ci10n0xxewcr9x";
+const PRESCRIBER_URL = "/register?role=PROVIDER";
 
 const callSchema = z.object({
   name: z.string().trim().min(2).max(100),
@@ -97,7 +97,7 @@ function Contact() {
         <div className="md:col-span-8 flex items-center justify-center rounded-sm border border-primary/10 bg-card p-8 md:p-10">
           <div className="text-center">
             <h2 className="font-display text-2xl font-semibold text-primary">Register your practice</h2>
-            <p className="mt-2 max-w-md text-sm text-muted-foreground">Create your prescriber account through our partner portal to get verified and start ordering.</p>
+            <p className="mt-2 max-w-md text-sm text-muted-foreground">Create your Wellness Tech account, verify NPI, and get approved to start ordering.</p>
             <a
               href={PRESCRIBER_URL}
               onClick={async (e) => {

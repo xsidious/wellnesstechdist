@@ -275,7 +275,7 @@ function Exosomes() {
           <h2 className="mt-2 max-w-2xl font-display text-3xl font-semibold text-primary md:text-4xl">
             ABio Labs — Pioneering Korean exosome biotechnology.
           </h2>
-          <div className="mt-8 grid gap-8 md:grid-cols-[1fr_auto_1fr] md:items-start">
+          <div className="mt-8 grid gap-10 md:grid-cols-2 md:items-start">
             <div>
               <h3 className="font-display text-xl font-medium text-primary">A legacy of regenerative science</h3>
               <p className="mt-3 text-sm leading-relaxed text-primary/80">
@@ -284,17 +284,6 @@ function Exosomes() {
               <p className="mt-3 text-sm leading-relaxed text-primary/80">
                 The company operates out of KFDA-registered, ISO-certified, cGMP (Current Good Manufacturing Practice) facilities in Korea, where every batch undergoes rigorous quality control — from stem-cell isolation and conditioned-media harvesting to tangential-flow filtration, nanoparticle-tracking analysis (NTA), and full Certificate of Analysis (COA) documentation. cGMP compliance ensures consistent identity, strength, quality and purity of every vial produced.
               </p>
-            </div>
-            <div className="flex flex-col items-center justify-start gap-2 self-start">
-              <img
-                src="/images/cgmp-badge.png"
-                alt="cGMP Certified — Current Good Manufacturing Practice"
-                width={200}
-                height={200}
-                loading="lazy"
-                className="h-40 w-40 object-contain md:h-48 md:w-48"
-              />
-              <span className="text-[10px] font-semibold uppercase tracking-widest text-primary/70">cGMP Certified</span>
             </div>
             <div>
               <h3 className="font-display text-xl font-medium text-primary">Expertise &amp; innovation</h3>
