@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import { formatCents } from "@/lib/utils";
 import { addToCart } from "@/app/(site)/cart/actions";
+import { emitCartUpdated, emitOpenCart } from "@/components/cart/CartProvider";
 
 type Variant = {
   id: string;
@@ -52,7 +53,13 @@ export function VariantSelector({
     setMessage(null);
     startTransition(async () => {
       const res = await addToCart(selected.id, qty);
-      setMessage(res.error || `Added ${productName} to cart`);
+      if (res.error) {
+        setMessage(res.error);
+        return;
+      }
+      setMessage(`Added ${productName} to cart`);
+      emitCartUpdated();
+      emitOpenCart();
     });
   }
 

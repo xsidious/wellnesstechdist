@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { ChevronDown, Menu, ShoppingCart, X } from "lucide-react";
+import { useCartUi } from "@/components/cart/CartProvider";
 
 type NavLeaf = { href: string; label: string; description?: string };
 
@@ -11,7 +12,6 @@ type NavItem =
   | { type: "link"; href: string; label: string; exact?: boolean }
   | { type: "dropdown"; label: string; items: NavLeaf[] };
 
-/** Primary nav: catalog + resources grouped to keep the bar short. */
 const primaryNav: NavItem[] = [
   { type: "link", href: "/", label: "Home", exact: true },
   { type: "link", href: "/about", label: "About" },
@@ -116,10 +116,12 @@ function NavDropdown({
   label,
   items,
   active,
+  align = "left",
 }: {
   label: string;
   items: NavLeaf[];
   active: boolean;
+  align?: "left" | "right";
 }) {
   const [open, setOpen] = useState(false);
   const id = useId();
@@ -167,17 +169,14 @@ function NavDropdown({
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className={`relative inline-flex items-center gap-1 px-3.5 py-3 text-[13px] font-medium tracking-wide transition-colors ${
-          active || open ? "text-primary" : "text-primary/55 hover:text-primary"
+        className={`inline-flex items-center gap-1 px-2.5 py-2 text-[13px] font-medium tracking-wide transition-colors xl:px-3 ${
+          active || open ? "text-primary" : "text-primary/60 hover:text-primary"
         }`}
       >
         {label}
         <ChevronDown
-          className={`size-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-        />
-        <span
-          className={`absolute inset-x-3 bottom-0 h-[2px] origin-left bg-accent transition-transform duration-300 ${
-            active ? "scale-x-100" : "scale-x-0"
+          className={`size-3.5 opacity-70 transition-transform duration-200 ${
+            open ? "rotate-180" : ""
           }`}
         />
       </button>
@@ -185,7 +184,9 @@ function NavDropdown({
         <div
           role="menu"
           aria-labelledby={id}
-          className="absolute left-0 top-full z-50 min-w-[260px] border border-primary/10 bg-white py-2 shadow-[0_12px_40px_rgba(15,40,60,0.08)]"
+          className={`absolute top-[calc(100%+0.5rem)] z-50 min-w-[250px] border border-primary/10 bg-white py-2 shadow-[0_16px_48px_rgba(15,40,60,0.1)] ${
+            align === "right" ? "right-0" : "left-0"
+          }`}
         >
           {items.map((item) => (
             <Link
@@ -209,16 +210,10 @@ function NavDropdown({
   );
 }
 
-function MobileGroup({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
+function MobileGroup({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className="border-b border-primary/10 py-3">
-      <div className="px-4 pb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/45">
+      <div className="px-1 pb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/40">
         {title}
       </div>
       <div className="flex flex-col">{children}</div>
@@ -227,93 +222,44 @@ function MobileGroup({
 }
 
 export function SiteHeader({ user }: { user?: HeaderUser | null }) {
-  const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const dash = user ? dashboardForRole(user.role) : null;
+  const { openCart, cart } = useCartUi();
 
   useEffect(() => {
-    setOpen(false);
+    setMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    if (!menuOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = prev;
     };
-  }, [open]);
+  }, [menuOpen]);
 
   return (
-    <header className="sticky top-0 z-50 bg-white">
-      <div className="border-b border-primary/10">
-        <div className="container-x flex h-[4.25rem] items-center justify-between gap-4">
-          <Link
-            href="/"
-            className="flex shrink-0 items-center"
-            aria-label="Wellness Tech Distribution home"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/wellness-tech-logo.png"
-              alt="Wellness Tech Distribution"
-              className="h-11 w-auto max-w-[210px] object-contain object-left sm:h-12 sm:max-w-[230px]"
-            />
-          </Link>
+    <header className="sticky top-0 z-50 border-b border-primary/10 bg-white">
+      <div className="container-x flex h-[4.5rem] items-center gap-3 xl:gap-6">
+        <Link
+          href="/"
+          className="flex shrink-0 items-center"
+          aria-label="Wellness Tech Distribution home"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/wellness-tech-logo.png"
+            alt="Wellness Tech Distribution"
+            className="h-10 w-auto max-w-[180px] object-contain object-left sm:h-11 sm:max-w-[200px]"
+          />
+        </Link>
 
-          <div className="hidden items-center gap-1 lg:flex">
-            <NavDropdown
-              label="Join"
-              items={joinLinks}
-              active={dropdownActive(pathname, joinLinks)}
-            />
-            <span className="mx-1 h-4 w-px bg-primary/15" aria-hidden />
-            {dash ? (
-              <Link
-                href={dash.href}
-                className="px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-accent transition hover:text-accent/80"
-              >
-                {dash.label}
-              </Link>
-            ) : (
-              <Link
-                href="/login"
-                className="px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-primary/70 transition hover:text-primary"
-              >
-                Sign in
-              </Link>
-            )}
-            <Link
-              href="/cart"
-              aria-label="Cart"
-              title="Cart"
-              className="ml-1 inline-flex size-10 items-center justify-center bg-primary text-primary-foreground transition hover:bg-primary/90"
-            >
-              <ShoppingCart className="size-4" />
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-2 lg:hidden">
-            <Link
-              href="/cart"
-              aria-label="Cart"
-              className="inline-flex size-10 items-center justify-center border border-primary/15 text-primary transition hover:border-primary/30"
-            >
-              <ShoppingCart className="size-4" />
-            </Link>
-            <button
-              onClick={() => setOpen((v) => !v)}
-              className="inline-flex size-10 items-center justify-center border border-primary/15 text-primary transition hover:border-primary/30"
-              aria-label={open ? "Close menu" : "Open menu"}
-              aria-expanded={open}
-              type="button"
-            >
-              {open ? <X className="size-5" /> : <Menu className="size-5" />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="hidden border-b border-primary/10 bg-white lg:block">
-        <nav className="container-x flex items-center gap-0.5" aria-label="Primary">
+        <nav
+          className="ml-2 hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex"
+          aria-label="Primary"
+        >
           {primaryNav.map((item) => {
             if (item.type === "link") {
               const active = isActive(pathname, item.href, item.exact);
@@ -321,13 +267,13 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative px-3.5 py-3 text-[13px] font-medium tracking-wide transition-colors ${
-                    active ? "text-primary" : "text-primary/55 hover:text-primary"
+                  className={`relative px-2.5 py-2 text-[13px] font-medium tracking-wide transition-colors xl:px-3 ${
+                    active ? "text-primary" : "text-primary/60 hover:text-primary"
                   }`}
                 >
                   {item.label}
                   <span
-                    className={`absolute inset-x-3 bottom-0 h-[2px] origin-left bg-accent transition-transform duration-300 ${
+                    className={`absolute inset-x-2.5 -bottom-0.5 h-[2px] origin-left bg-accent transition-transform duration-300 ${
                       active ? "scale-x-100" : "scale-x-0"
                     }`}
                   />
@@ -344,20 +290,82 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
             );
           })}
         </nav>
+
+        <div className="ml-auto hidden items-center gap-1 lg:flex">
+          <NavDropdown
+            label="Join"
+            items={joinLinks}
+            active={dropdownActive(pathname, joinLinks)}
+            align="right"
+          />
+          {dash ? (
+            <Link
+              href={dash.href}
+              className="px-2.5 py-2 text-[13px] font-medium text-accent transition hover:text-accent/80"
+            >
+              {dash.label}
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              className="px-2.5 py-2 text-[13px] font-medium text-primary/60 transition hover:text-primary"
+            >
+              Sign in
+            </Link>
+          )}
+          <button
+            type="button"
+            onClick={openCart}
+            aria-label={`Open cart${cart.count ? `, ${cart.count} items` : ""}`}
+            className="relative ml-1 inline-flex size-10 items-center justify-center border border-primary/12 text-primary transition hover:border-primary/30 hover:bg-primary/[0.03]"
+          >
+            <ShoppingCart className="size-4" />
+            {cart.count > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center bg-accent px-1 text-[10px] font-semibold text-accent-foreground">
+                {cart.count > 99 ? "99+" : cart.count}
+              </span>
+            )}
+          </button>
+        </div>
+
+        <div className="ml-auto flex items-center gap-2 lg:hidden">
+          <button
+            type="button"
+            onClick={openCart}
+            aria-label={`Open cart${cart.count ? `, ${cart.count} items` : ""}`}
+            className="relative inline-flex size-10 items-center justify-center border border-primary/15 text-primary"
+          >
+            <ShoppingCart className="size-4" />
+            {cart.count > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center bg-accent px-1 text-[10px] font-semibold text-accent-foreground">
+                {cart.count > 99 ? "99+" : cart.count}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setMenuOpen((v) => !v)}
+            className="inline-flex size-10 items-center justify-center border border-primary/15 text-primary"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            type="button"
+          >
+            {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+          </button>
+        </div>
       </div>
 
-      {open && (
-        <div className="fixed inset-0 top-[4.25rem] z-50 bg-white lg:hidden">
+      {menuOpen && (
+        <div className="fixed inset-0 top-[4.5rem] z-50 bg-white lg:hidden">
           <div className="container-x flex h-full flex-col overflow-y-auto pb-10 pt-2">
-            <MobileGroup title="Browse">
+            <MobileGroup title="Menu">
               {primaryNav
                 .filter((i): i is Extract<NavItem, { type: "link" }> => i.type === "link")
                 .map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    onClick={() => setOpen(false)}
-                    className={`px-4 py-3 text-base font-medium ${
+                    onClick={() => setMenuOpen(false)}
+                    className={`py-3 text-base font-medium ${
                       isActive(pathname, item.href, item.exact)
                         ? "text-primary"
                         : "text-primary/70"
@@ -376,8 +384,8 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
                     <Link
                       key={item.href}
                       href={item.href}
-                      onClick={() => setOpen(false)}
-                      className={`px-4 py-3 text-base font-medium ${
+                      onClick={() => setMenuOpen(false)}
+                      className={`py-3 text-base font-medium ${
                         isActive(pathname, item.href) ? "text-primary" : "text-primary/70"
                       }`}
                     >
@@ -392,40 +400,32 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="px-4 py-3 text-base font-medium text-primary/70"
+                  onClick={() => setMenuOpen(false)}
+                  className="py-3 text-base font-medium text-primary/70"
                 >
                   {item.label}
                 </Link>
               ))}
             </MobileGroup>
 
-            <div className="mt-6 grid grid-cols-2 gap-2 px-4">
+            <div className="mt-6">
               {dash ? (
                 <Link
                   href={dash.href}
-                  onClick={() => setOpen(false)}
-                  className="border border-accent/40 px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-accent"
+                  onClick={() => setMenuOpen(false)}
+                  className="block border border-accent/40 px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-accent"
                 >
                   {dash.label}
                 </Link>
               ) : (
                 <Link
                   href="/login"
-                  onClick={() => setOpen(false)}
-                  className="border border-primary/20 px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-primary"
+                  onClick={() => setMenuOpen(false)}
+                  className="block border border-primary/20 px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-primary"
                 >
                   Sign in
                 </Link>
               )}
-              <Link
-                href="/cart"
-                onClick={() => setOpen(false)}
-                aria-label="Cart"
-                className="inline-flex items-center justify-center bg-primary px-4 py-3 text-primary-foreground"
-              >
-                <ShoppingCart className="size-4" />
-              </Link>
             </div>
           </div>
         </div>

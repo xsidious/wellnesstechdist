@@ -2,6 +2,8 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { AgeGate } from "@/components/AgeGate";
+import { CartProvider } from "@/components/cart/CartProvider";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 import { auth } from "@/lib/auth";
 
 export async function SiteLayout({ children }: { children: React.ReactNode }) {
@@ -15,12 +17,15 @@ export async function SiteLayout({ children }: { children: React.ReactNode }) {
     : null;
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <SiteHeader user={user} />
-      <main className="flex-1">{children}</main>
-      <SiteFooter />
-      <AgeGate />
-    </div>
+    <CartProvider>
+      <div className="flex min-h-screen flex-col">
+        <SiteHeader user={user} />
+        <main className="flex-1">{children}</main>
+        <SiteFooter />
+        <AgeGate />
+        <CartDrawer />
+      </div>
+    </CartProvider>
   );
 }
 
