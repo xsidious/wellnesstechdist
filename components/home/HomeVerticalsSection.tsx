@@ -40,7 +40,7 @@ export function HomeVerticalsSection() {
           <Link
             key={v.title}
             href={v.href}
-            className="group overflow-hidden border border-primary/10 bg-background transition hover:border-accent/50"
+            className="group overflow-hidden rounded-3xl border border-primary/10 bg-white/90 shadow-[0_18px_50px_rgba(15,40,60,0.06)] transition hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_22px_60px_rgba(15,40,60,0.1)]"
           >
             <div className="relative aspect-[16/10] overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -50,7 +50,7 @@ export function HomeVerticalsSection() {
                 width={1200}
                 height={750}
                 loading="lazy"
-                className={`size-full transition duration-500 group-hover:scale-[1.02] ${
+                className={`size-full transition duration-500 group-hover:scale-[1.03] ${
                   v.imageClass || "object-cover"
                 }`}
               />

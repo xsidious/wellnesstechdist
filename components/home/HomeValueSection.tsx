@@ -12,7 +12,7 @@ const deliver = [
   },
   {
     title: "Platform & operations",
-    body: "Secure, Next.js-based B2B system on private VPS with role‑based security, API integrations, customizable workflows, automation, and end‑to‑end practice enablement.",
+    body: "Secure B2B system with role‑based access, integrations, customizable workflows, and end‑to‑end practice enablement.",
   },
 ];
 
@@ -33,15 +33,15 @@ const why = [
 
 export function HomeValueSection() {
   return (
-    <section className="border-b border-primary/10 bg-primary/5">
-      <div className="container-x py-24 md:py-32">
+    <section className="border-b border-primary/10 bg-primary/[0.035]">
+      <div className="container-x py-20 md:py-28">
         <p className="max-w-3xl font-display text-2xl font-semibold leading-snug text-primary md:text-3xl">
           Pharmaceutical‑grade therapies. Verified compounding partners. Enterprise‑grade digital
           platform.
         </p>
 
-        <div className="mt-16 grid gap-14 lg:grid-cols-2">
-          <div>
+        <div className="mt-12 grid gap-6 lg:grid-cols-2">
+          <div className="rounded-3xl border border-primary/10 bg-white/80 p-7 shadow-[0_16px_40px_rgba(15,40,60,0.04)] md:p-9">
             <h2 className="text-xs font-semibold uppercase tracking-widest text-accent">
               What we deliver
             </h2>
@@ -58,7 +58,7 @@ export function HomeValueSection() {
             </ul>
           </div>
 
-          <div>
+          <div className="rounded-3xl border border-primary/10 bg-white/80 p-7 shadow-[0_16px_40px_rgba(15,40,60,0.04)] md:p-9">
             <h2 className="text-xs font-semibold uppercase tracking-widest text-accent">
               Why it matters
             </h2>
@@ -76,26 +76,22 @@ export function HomeValueSection() {
           </div>
         </div>
 
-        <div className="mt-16 max-w-3xl border-t border-primary/10 pt-12">
+        <div className="mt-8 rounded-3xl border border-primary/10 bg-white/80 p-7 shadow-[0_16px_40px_rgba(15,40,60,0.04)] md:p-9">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-accent">Ideal for</h2>
-          <p className="mt-4 text-base leading-relaxed text-primary/90 md:text-lg">
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-primary/90 md:text-lg">
             Medical spas, aesthetic clinics, concierge wellness practices, and physician groups seeking
             compliant product sourcing, staff training, and scalable digital infrastructure.
-          </p>
-          <p className="mt-6 text-sm leading-relaxed text-muted-foreground md:text-base">
-            Schedule a demo or request a practice assessment to see how Wellness Tech Distribution can
-            supply, train, and build the technology backbone for your growth.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 rounded-sm bg-primary px-6 py-3.5 text-sm font-semibold uppercase tracking-wider text-primary-foreground transition hover:bg-primary/90"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-primary-foreground shadow-[0_12px_28px_rgba(20,70,100,0.2)] transition hover:bg-primary/90"
             >
               Schedule a demo <ArrowUpRight className="size-4" />
             </Link>
             <Link
               href="/register?role=PROVIDER"
-              className="inline-flex items-center gap-2 rounded-sm border border-primary/25 px-6 py-3.5 text-sm font-semibold uppercase tracking-wider text-primary transition hover:border-accent hover:text-accent"
+              className="inline-flex items-center gap-2 rounded-full border border-primary/20 px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-primary transition hover:border-accent hover:text-accent"
             >
               Request practice assessment
             </Link>

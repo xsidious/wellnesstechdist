@@ -16,13 +16,13 @@ const resources = [
     href: "/products",
   },
   {
-    title: "High quality Cosmetic Grade Korean Exosomes",
-    desc: "Premium high quality cosmetic grade Korean exosome therapies for medical aesthetics — SX, PX, Spicule, hair, and skin booster lines.",
+    title: "Korean Exosomes",
+    desc: "Premium cosmetic-grade Korean exosome therapies for medical aesthetics — SX, PX, Spicule, hair, and skin booster lines.",
     href: "/exosomes",
   },
   {
     title: "Aesthetic & Medical Devices",
-    desc: "Distribution of clinical aesthetic devices, injectables ancillaries, and medical supplies for modern practices.",
+    desc: "Distribution of clinical aesthetic devices, injectable ancillaries, and medical supplies for modern practices.",
     href: "/supplies",
   },
 ];
@@ -31,13 +31,13 @@ export function ResourcesSection() {
   const access = useAccess();
   const unlocked = !!access;
   return (
-    <section className="container-x py-24 md:py-32">
+    <section className="container-x py-20 md:py-28">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <span className="text-base font-semibold uppercase tracking-widest text-accent">
+          <span className="text-xs font-semibold uppercase tracking-widest text-accent">
             Practitioner resources
           </span>
-          <h2 className="mt-3 max-w-3xl font-display text-4xl font-semibold text-primary md:text-5xl">
+          <h2 className="mt-3 max-w-3xl font-display text-3xl font-semibold text-primary md:text-4xl">
             A single source for the modalities defining today&apos;s practice.
           </h2>
           {!unlocked && (
@@ -47,14 +47,22 @@ export function ResourcesSection() {
           )}
         </div>
       </div>
-      <div className="mt-14 grid gap-px overflow-hidden rounded-sm bg-primary/10 md:grid-cols-2">
+      <div className="mt-10 grid gap-3 md:grid-cols-2">
         {resources.map((r, i) =>
           unlocked ? (
-            <Link key={r.title} href={r.href} className="group bg-background p-8 transition hover:bg-primary/5">
+            <Link
+              key={r.title}
+              href={r.href}
+              className="group rounded-3xl border border-primary/10 bg-white/90 p-7 shadow-[0_12px_32px_rgba(15,40,60,0.04)] transition hover:-translate-y-0.5 hover:border-accent/40"
+            >
               <ResourceCardContent index={i} title={r.title} desc={r.desc} locked={false} />
             </Link>
           ) : (
-            <a key={r.title} href="#register" className="group bg-background p-8 transition hover:bg-primary/5">
+            <a
+              key={r.title}
+              href="#register"
+              className="group rounded-3xl border border-primary/10 bg-white/90 p-7 shadow-[0_12px_32px_rgba(15,40,60,0.04)] transition hover:-translate-y-0.5 hover:border-accent/40"
+            >
               <ResourceCardContent index={i} title={r.title} desc={r.desc} locked />
             </a>
           ),

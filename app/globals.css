@@ -11,20 +11,6 @@
   @font-face { font-family: "fallback"; src: local("system-ui"); }
 }
 
-/*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
- */
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -75,27 +61,27 @@
 }
 
 :root {
-  --radius: 0.25rem;
-  /* White background with Turquoise + Gold accents */
+  /* Softer, more rounded B2B system */
+  --radius: 0.9rem;
   --emerald-deep: oklch(0.35 0.16 215);
   --gold: oklch(0.78 0.14 85);
   --gold-soft: oklch(0.88 0.08 88);
-  --cream: oklch(1 0 0);
+  --cream: oklch(0.985 0.008 215);
 
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.15 0.03 230);
+  --background: oklch(0.985 0.008 215);
+  --foreground: oklch(0.18 0.03 230);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.03 230);
+  --card-foreground: oklch(0.18 0.03 230);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.03 230);
+  --popover-foreground: oklch(0.18 0.03 230);
   --primary: oklch(0.35 0.16 215);
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.95 0.02 215);
-  --secondary-foreground: oklch(0.2 0.04 215);
-  --muted: oklch(0.97 0.01 215);
-  --muted-foreground: oklch(0.42 0.04 215);
+  --secondary-foreground: oklch(0.22 0.04 215);
+  --muted: oklch(0.965 0.012 215);
+  --muted-foreground: oklch(0.45 0.04 215);
   --accent: oklch(0.78 0.14 85);
-  --accent-foreground: oklch(0.2 0.04 80);
+  --accent-foreground: oklch(0.22 0.04 80);
   --destructive: oklch(0.55 0.22 27);
   --destructive-foreground: oklch(0.984 0.003 247.858);
   --border: oklch(0.9 0.02 215);
@@ -106,12 +92,12 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.95 0.02 215);
-  --sidebar-foreground: oklch(0.2 0.04 215);
+  --sidebar: oklch(0.97 0.015 215);
+  --sidebar-foreground: oklch(0.22 0.04 215);
   --sidebar-primary: oklch(0.35 0.16 215);
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.88 0.08 88);
-  --sidebar-accent-foreground: oklch(0.2 0.04 80);
+  --sidebar-accent-foreground: oklch(0.22 0.04 80);
   --sidebar-border: oklch(0.9 0.02 215);
   --sidebar-ring: oklch(0.35 0.16 215);
 }
@@ -158,6 +144,10 @@
 
   body {
     background-color: var(--color-background);
+    background-image:
+      radial-gradient(1200px 500px at 10% -10%, oklch(0.35 0.16 215 / 0.06), transparent 60%),
+      radial-gradient(900px 400px at 90% 0%, oklch(0.78 0.14 85 / 0.08), transparent 55%);
+    background-attachment: fixed;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "ss02";
@@ -173,4 +163,119 @@
   max-width: 1280px;
   margin-inline: auto;
   padding-inline: 1.5rem;
+}
+
+/* High-converting B2B primitives */
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  padding: 0.85rem 1.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 24px oklch(0.35 0.16 215 / 0.18);
+}
+
+@utility btn-primary:hover {
+  background: oklch(0.32 0.16 215);
+  transform: translateY(-1px);
+}
+
+@utility surface-card {
+  border: 1px solid oklch(0.9 0.02 215 / 0.9);
+  border-radius: var(--radius-2xl);
+  background: oklch(1 0 0 / 0.92);
+  box-shadow: 0 18px 50px oklch(0.25 0.05 215 / 0.06);
+  backdrop-filter: blur(8px);
+}
+
+/* Motion system — intentional, conversion-friendly */
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kenburns {
+  from {
+    transform: scale(1.05);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.hero-fade-1,
+.hero-fade-2,
+.hero-fade-3,
+.hero-fade-4 {
+  opacity: 0;
+  animation: hero-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.hero-fade-1 { animation-delay: 0.05s; }
+.hero-fade-2 { animation-delay: 0.18s; }
+.hero-fade-3 { animation-delay: 0.32s; }
+.hero-fade-4 { animation-delay: 0.46s; }
+
+.hero-kenburns {
+  animation: kenburns 18s ease-out forwards;
+  will-change: transform;
+}
+
+.marquee-track {
+  animation: marquee 32s linear infinite;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade-1,
+  .hero-fade-2,
+  .hero-fade-3,
+  .hero-fade-4,
+  .hero-kenburns,
+  .marquee-track {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

@@ -22,7 +22,7 @@ export function CartDrawer() {
   return (
     <>
       <div
-        className={`fixed inset-0 z-[60] bg-primary/30 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[60] bg-primary/35 backdrop-blur-[2px] transition-opacity duration-300 ${
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={closeCart}
@@ -30,8 +30,8 @@ export function CartDrawer() {
       />
 
       <aside
-        className={`fixed inset-y-0 right-0 z-[70] flex w-full max-w-md flex-col bg-white shadow-[-12px_0_40px_rgba(15,40,60,0.12)] transition-transform duration-300 ease-out ${
-          open ? "translate-x-0" : "translate-x-full"
+        className={`fixed inset-y-3 right-3 z-[70] flex w-[calc(100%-1.5rem)] max-w-md flex-col overflow-hidden rounded-3xl border border-primary/10 bg-white shadow-[-12px_0_50px_rgba(15,40,60,0.16)] transition-transform duration-300 ease-out ${
+          open ? "translate-x-0" : "translate-x-[120%]"
         }`}
         aria-hidden={!open}
         aria-label="Shopping cart"
@@ -48,7 +48,7 @@ export function CartDrawer() {
           <button
             type="button"
             onClick={closeCart}
-            className="inline-flex size-9 items-center justify-center border border-primary/15 text-primary transition hover:border-primary/30"
+            className="inline-flex size-9 items-center justify-center rounded-full border border-primary/15 text-primary transition hover:border-primary/30"
             aria-label="Close cart"
           >
             <X className="size-4" />
@@ -71,9 +71,12 @@ export function CartDrawer() {
               </Link>
             </div>
           ) : (
-            <ul className="divide-y divide-primary/10">
+            <ul className="space-y-3">
               {cart.items.map((item) => (
-                <li key={item.id} className="py-4">
+                <li
+                  key={item.id}
+                  className="rounded-2xl border border-primary/10 bg-primary/[0.02] p-4"
+                >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <Link
@@ -84,9 +87,7 @@ export function CartDrawer() {
                         {item.productName}
                       </Link>
                       <p className="mt-0.5 text-xs text-muted-foreground">{item.variantName}</p>
-                      <p className="mt-1 text-sm text-primary">
-                        {formatCents(item.priceCents)}
-                      </p>
+                      <p className="mt-1 text-sm text-primary">{formatCents(item.priceCents)}</p>
                     </div>
                     <button
                       type="button"
@@ -98,7 +99,7 @@ export function CartDrawer() {
                     </button>
                   </div>
                   <div className="mt-3 flex items-center justify-between">
-                    <div className="inline-flex items-center border border-primary/15">
+                    <div className="inline-flex items-center overflow-hidden rounded-full border border-primary/15">
                       <button
                         type="button"
                         className="inline-flex size-8 items-center justify-center text-primary transition hover:bg-primary/5"
@@ -140,7 +141,7 @@ export function CartDrawer() {
             <Link
               href="/checkout"
               onClick={closeCart}
-              className={`inline-flex items-center justify-center bg-primary px-4 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-primary-foreground transition hover:bg-primary/90 ${
+              className={`inline-flex items-center justify-center rounded-full bg-primary px-4 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-primary-foreground shadow-[0_10px_24px_rgba(20,70,100,0.2)] transition hover:bg-primary/90 ${
                 cart.items.length === 0 ? "pointer-events-none opacity-40" : ""
               }`}
             >
@@ -149,7 +150,7 @@ export function CartDrawer() {
             <Link
               href="/cart"
               onClick={closeCart}
-              className="inline-flex items-center justify-center border border-primary/20 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary transition hover:border-primary/40"
+              className="inline-flex items-center justify-center rounded-full border border-primary/20 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary transition hover:border-primary/40"
             >
               View full cart
             </Link>

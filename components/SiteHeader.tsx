@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { ChevronDown, Menu, ShoppingCart, X } from "lucide-react";
 import { useCartUi } from "@/components/cart/CartProvider";
+import { dashboardPathForRole } from "@/lib/auth-redirect";
 
 type NavLeaf = { href: string; label: string; description?: string };
 
@@ -89,16 +90,16 @@ export type HeaderUser = {
   email?: string | null;
 };
 
-function dashboardForRole(role: string): { href: string; label: string } {
+function dashboardLabel(role: string): string {
   switch (role) {
     case "ADMIN":
-      return { href: "/admin", label: "Admin" };
+      return "Admin";
     case "PROVIDER":
-      return { href: "/provider", label: "Provider" };
+      return "Provider";
     case "AMBASSADOR":
-      return { href: "/ambassador", label: "Ambassador" };
+      return "Ambassador";
     default:
-      return { href: "/account", label: "Account" };
+      return "Account";
   }
 }
 
@@ -169,8 +170,10 @@ function NavDropdown({
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className={`inline-flex items-center gap-1 px-2.5 py-2 text-[13px] font-medium tracking-wide transition-colors xl:px-3 ${
-          active || open ? "text-primary" : "text-primary/60 hover:text-primary"
+        className={`inline-flex items-center gap-1 rounded-full px-3 py-2 text-[13px] font-medium tracking-wide transition-colors ${
+          active || open
+            ? "bg-primary/[0.06] text-primary"
+            : "text-primary/65 hover:bg-primary/[0.04] hover:text-primary"
         }`}
       >
         {label}
@@ -184,7 +187,7 @@ function NavDropdown({
         <div
           role="menu"
           aria-labelledby={id}
-          className={`absolute top-[calc(100%+0.5rem)] z-50 min-w-[250px] border border-primary/10 bg-white py-2 shadow-[0_16px_48px_rgba(15,40,60,0.1)] ${
+          className={`absolute top-[calc(100%+0.55rem)] z-50 min-w-[270px] overflow-hidden rounded-2xl border border-primary/10 bg-white/95 py-2 shadow-[0_20px_50px_rgba(15,40,60,0.12)] backdrop-blur-md ${
             align === "right" ? "right-0" : "left-0"
           }`}
         >
@@ -224,7 +227,9 @@ function MobileGroup({ title, children }: { title: string; children: ReactNode }
 export function SiteHeader({ user }: { user?: HeaderUser | null }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
-  const dash = user ? dashboardForRole(user.role) : null;
+  const dash = user
+    ? { href: dashboardPathForRole(user.role), label: dashboardLabel(user.role) }
+    : null;
   const { openCart, cart } = useCartUi();
 
   useEffect(() => {
@@ -241,122 +246,127 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
   }, [menuOpen]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-primary/10 bg-white">
-      <div className="container-x flex h-[4.5rem] items-center gap-3 xl:gap-6">
-        <Link
-          href="/"
-          className="flex shrink-0 items-center"
-          aria-label="Wellness Tech Distribution home"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/wellness-tech-logo.png"
-            alt="Wellness Tech Distribution"
-            className="h-10 w-auto max-w-[180px] object-contain object-left sm:h-11 sm:max-w-[200px]"
-          />
-        </Link>
+    <header className="sticky top-0 z-50 px-3 pt-3 pb-2">
+      <div className="container-x rounded-2xl border border-primary/10 bg-white/90 shadow-[0_12px_40px_rgba(15,40,60,0.08)] backdrop-blur-xl">
+        <div className="flex h-[4.25rem] items-center gap-3 px-3 sm:px-4 xl:gap-5">
+          <Link
+            href="/"
+            className="flex shrink-0 items-center"
+            aria-label="Wellness Tech Distribution home"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/wellness-tech-logo.png"
+              alt="Wellness Tech Distribution"
+              className="h-10 w-auto max-w-[180px] object-contain object-left sm:h-11 sm:max-w-[200px]"
+            />
+          </Link>
 
-        <nav
-          className="ml-2 hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex"
-          aria-label="Primary"
-        >
-          {primaryNav.map((item) => {
-            if (item.type === "link") {
-              const active = isActive(pathname, item.href, item.exact);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`relative px-2.5 py-2 text-[13px] font-medium tracking-wide transition-colors xl:px-3 ${
-                    active ? "text-primary" : "text-primary/60 hover:text-primary"
-                  }`}
-                >
-                  {item.label}
-                  <span
-                    className={`absolute inset-x-2.5 -bottom-0.5 h-[2px] origin-left bg-accent transition-transform duration-300 ${
-                      active ? "scale-x-100" : "scale-x-0"
+          <nav
+            className="ml-1 hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex"
+            aria-label="Primary"
+          >
+            {primaryNav.map((item) => {
+              if (item.type === "link") {
+                const active = isActive(pathname, item.href, item.exact);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`rounded-full px-3 py-2 text-[13px] font-medium tracking-wide transition-colors ${
+                      active
+                        ? "bg-primary/[0.06] text-primary"
+                        : "text-primary/65 hover:bg-primary/[0.04] hover:text-primary"
                     }`}
-                  />
-                </Link>
+                  >
+                    {item.label}
+                  </Link>
+                );
+              }
+              return (
+                <NavDropdown
+                  key={item.label}
+                  label={item.label}
+                  items={item.items}
+                  active={dropdownActive(pathname, item.items)}
+                />
               );
-            }
-            return (
-              <NavDropdown
-                key={item.label}
-                label={item.label}
-                items={item.items}
-                active={dropdownActive(pathname, item.items)}
-              />
-            );
-          })}
-        </nav>
+            })}
+          </nav>
 
-        <div className="ml-auto hidden items-center gap-1 lg:flex">
-          <NavDropdown
-            label="Join"
-            items={joinLinks}
-            active={dropdownActive(pathname, joinLinks)}
-            align="right"
-          />
-          {dash ? (
-            <Link
-              href={dash.href}
-              className="px-2.5 py-2 text-[13px] font-medium text-accent transition hover:text-accent/80"
-            >
-              {dash.label}
-            </Link>
-          ) : (
-            <Link
-              href="/login"
-              className="px-2.5 py-2 text-[13px] font-medium text-primary/60 transition hover:text-primary"
-            >
-              Sign in
-            </Link>
-          )}
-          <button
-            type="button"
-            onClick={openCart}
-            aria-label={`Open cart${cart.count ? `, ${cart.count} items` : ""}`}
-            className="relative ml-1 inline-flex size-10 items-center justify-center border border-primary/12 text-primary transition hover:border-primary/30 hover:bg-primary/[0.03]"
-          >
-            <ShoppingCart className="size-4" />
-            {cart.count > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center bg-accent px-1 text-[10px] font-semibold text-accent-foreground">
-                {cart.count > 99 ? "99+" : cart.count}
-              </span>
+          <div className="ml-auto hidden items-center gap-1.5 lg:flex">
+            <NavDropdown
+              label="Join"
+              items={joinLinks}
+              active={dropdownActive(pathname, joinLinks)}
+              align="right"
+            />
+            {dash ? (
+              <Link
+                href={dash.href}
+                className="rounded-full bg-accent/20 px-3.5 py-2 text-[13px] font-semibold text-accent-foreground transition hover:bg-accent/30"
+              >
+                {dash.label}
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="rounded-full px-3.5 py-2 text-[13px] font-medium text-primary/70 transition hover:bg-primary/[0.04] hover:text-primary"
+              >
+                Sign in
+              </Link>
             )}
-          </button>
-        </div>
+            <Link
+              href="/register?role=PROVIDER"
+              className="ml-1 hidden rounded-full bg-primary px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-primary-foreground shadow-[0_8px_20px_rgba(20,70,100,0.2)] transition hover:bg-primary/90 xl:inline-flex"
+            >
+              Get access
+            </Link>
+            <button
+              type="button"
+              onClick={openCart}
+              aria-label={`Open cart${cart.count ? `, ${cart.count} items` : ""}`}
+              className="relative ml-0.5 inline-flex size-10 items-center justify-center rounded-full border border-primary/12 text-primary transition hover:border-primary/30 hover:bg-primary/[0.04]"
+            >
+              <ShoppingCart className="size-4" />
+              {cart.count > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-semibold text-accent-foreground">
+                  {cart.count > 99 ? "99+" : cart.count}
+                </span>
+              )}
+            </button>
+          </div>
 
-        <div className="ml-auto flex items-center gap-2 lg:hidden">
-          <button
-            type="button"
-            onClick={openCart}
-            aria-label={`Open cart${cart.count ? `, ${cart.count} items` : ""}`}
-            className="relative inline-flex size-10 items-center justify-center border border-primary/15 text-primary"
-          >
-            <ShoppingCart className="size-4" />
-            {cart.count > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center bg-accent px-1 text-[10px] font-semibold text-accent-foreground">
-                {cart.count > 99 ? "99+" : cart.count}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => setMenuOpen((v) => !v)}
-            className="inline-flex size-10 items-center justify-center border border-primary/15 text-primary"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            type="button"
-          >
-            {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
+          <div className="ml-auto flex items-center gap-2 lg:hidden">
+            <button
+              type="button"
+              onClick={openCart}
+              aria-label={`Open cart${cart.count ? `, ${cart.count} items` : ""}`}
+              className="relative inline-flex size-10 items-center justify-center rounded-full border border-primary/15 text-primary"
+            >
+              <ShoppingCart className="size-4" />
+              {cart.count > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-semibold text-accent-foreground">
+                  {cart.count > 99 ? "99+" : cart.count}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              className="inline-flex size-10 items-center justify-center rounded-full border border-primary/15 text-primary"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              type="button"
+            >
+              {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            </button>
+          </div>
         </div>
       </div>
 
       {menuOpen && (
-        <div className="fixed inset-0 top-[4.5rem] z-50 bg-white lg:hidden">
-          <div className="container-x flex h-full flex-col overflow-y-auto pb-10 pt-2">
+        <div className="fixed inset-x-0 bottom-0 top-[5.25rem] z-50 px-3 pb-3 lg:hidden">
+          <div className="flex h-full flex-col overflow-y-auto rounded-2xl border border-primary/10 bg-white/95 p-4 shadow-[0_20px_60px_rgba(15,40,60,0.12)] backdrop-blur-xl">
             <MobileGroup title="Menu">
               {primaryNav
                 .filter((i): i is Extract<NavItem, { type: "link" }> => i.type === "link")
@@ -365,9 +375,9 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
                     key={item.href}
                     href={item.href}
                     onClick={() => setMenuOpen(false)}
-                    className={`py-3 text-base font-medium ${
+                    className={`rounded-xl px-2 py-3 text-base font-medium ${
                       isActive(pathname, item.href, item.exact)
-                        ? "text-primary"
+                        ? "bg-primary/[0.05] text-primary"
                         : "text-primary/70"
                     }`}
                   >
@@ -385,8 +395,8 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
                       key={item.href}
                       href={item.href}
                       onClick={() => setMenuOpen(false)}
-                      className={`py-3 text-base font-medium ${
-                        isActive(pathname, item.href) ? "text-primary" : "text-primary/70"
+                      className={`rounded-xl px-2 py-3 text-base font-medium ${
+                        isActive(pathname, item.href) ? "bg-primary/[0.05] text-primary" : "text-primary/70"
                       }`}
                     >
                       {item.label}
@@ -401,31 +411,38 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMenuOpen(false)}
-                  className="py-3 text-base font-medium text-primary/70"
+                  className="rounded-xl px-2 py-3 text-base font-medium text-primary/70"
                 >
                   {item.label}
                 </Link>
               ))}
             </MobileGroup>
 
-            <div className="mt-6">
+            <div className="mt-6 grid gap-2">
               {dash ? (
                 <Link
                   href={dash.href}
                   onClick={() => setMenuOpen(false)}
-                  className="block border border-accent/40 px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-accent"
+                  className="rounded-full bg-accent/25 px-4 py-3.5 text-center text-xs font-semibold uppercase tracking-[0.14em] text-accent-foreground"
                 >
-                  {dash.label}
+                  {dash.label} dashboard
                 </Link>
               ) : (
                 <Link
                   href="/login"
                   onClick={() => setMenuOpen(false)}
-                  className="block border border-primary/20 px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-primary"
+                  className="rounded-full border border-primary/15 px-4 py-3.5 text-center text-xs font-semibold uppercase tracking-[0.14em] text-primary"
                 >
                   Sign in
                 </Link>
               )}
+              <Link
+                href="/register?role=PROVIDER"
+                onClick={() => setMenuOpen(false)}
+                className="rounded-full bg-primary px-4 py-3.5 text-center text-xs font-semibold uppercase tracking-[0.14em] text-primary-foreground"
+              >
+                Get practice access
+              </Link>
             </div>
           </div>
         </div>
