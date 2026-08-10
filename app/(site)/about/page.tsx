@@ -204,41 +204,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="container-x py-16 md:py-24">
-        <span className="text-xs font-semibold uppercase tracking-widest text-accent">
-          Website blurb
-        </span>
-        <h2 className="mt-3 font-display text-2xl font-semibold text-primary md:text-3xl">
-          One-page website blurb
-        </h2>
-        <div className="mt-6 max-w-3xl space-y-4 text-sm leading-relaxed text-muted-foreground md:text-base">
-          <p>
-            Wellness Tech Distribution partners with licensed physicians and medical practices to deliver
-            pharmaceutical‑grade compounded peptide therapies, GLP‑1 products, cosmetic‑grade Korean
-            exosomes, clinical aesthetic devices, and medical‑grade beauty &amp; wellness equipment. We
-            verify 503A/503B compounding partners and device manufacturers, handle procurement and
-            distribution, and provide clinician‑focused education so teams learn to use products and
-            devices safely and effectively.
-          </p>
-          <p>
-            Built on a secure, Next.js-based B2B platform hosted on private VPS infrastructure, we offer
-            enterprise‑grade security, advanced third‑party integrations, highly customizable workflows,
-            and automation that streamline onboarding, scheduling, inventory, documentation, reporting and
-            billing. More than software, we deliver an end‑to‑end business ecosystem—implementation,
-            ongoing support, and strategic partnership—so practices can scale, improve outcomes, and boost
-            ROI.
-          </p>
-        </div>
-
-        <div className="mt-12 max-w-3xl border-t border-primary/10 pt-10">
-          <span className="text-xs font-semibold uppercase tracking-widest text-accent">Tagline</span>
-          <p className="mt-3 font-display text-xl font-semibold text-primary md:text-2xl">
-            Trusted sourcing, clinician education, and secure B2B tech to scale evidence‑informed aesthetic
-            and wellness medicine.
-          </p>
-        </div>
-      </section>
-
       <section className="border-t border-primary/10 bg-card">
         <div className="container-x py-16 md:py-24">
           <span className="text-xs font-semibold uppercase tracking-widest text-accent">
