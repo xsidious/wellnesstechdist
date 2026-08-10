@@ -48,7 +48,7 @@ export default async function PrescribersPage({
       />
 
       <section className="container-x py-12 md:py-16">
-        <div className="mb-10 overflow-hidden rounded-3xl border border-primary/10">
+        <div className="mb-10 overflow-hidden rounded-3xl border border-primary/10 bg-primary/[0.04]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/people-physician.jpg"
@@ -56,7 +56,7 @@ export default async function PrescribersPage({
             width={1280}
             height={896}
             loading="lazy"
-            className="h-64 w-full object-cover md:h-80"
+            className="h-80 w-full object-cover object-[50%_12%] md:h-[28rem]"
           />
         </div>
         <div className="grid gap-3 md:grid-cols-4">
