@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, MapPin, Package, ShieldCheck } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
+
+const heroStats = [
+  { icon: ShieldCheck, label: "503A & 503B verified" },
+  { icon: Package, label: "100+ Rx products" },
+  { icon: MapPin, label: "Nationwide network" },
+];
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -97,6 +103,35 @@ export default function AboutPage() {
         eyebrow="About us"
         title="Wellness Tech Distribution"
         description="Trusted sourcing, clinician education, and secure B2B tech to scale evidence‑informed aesthetic and wellness medicine."
+        visual="ambient"
+        media={
+          <>
+            <div className="overflow-hidden rounded-2xl border border-accent/30 shadow-[0_16px_40px_rgba(0,0,0,0.18)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/people-team.jpg"
+                alt="Clinical team at a modern aesthetic and wellness practice"
+                width={1280}
+                height={896}
+                loading="eager"
+                className="block h-auto w-full"
+              />
+            </div>
+            <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3 md:grid-cols-1 lg:grid-cols-3">
+              {heroStats.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="flex items-center gap-2 rounded-xl border border-primary-foreground/15 bg-primary-foreground/8 px-3 py-2.5 backdrop-blur-sm"
+                >
+                  <stat.icon className="size-4 shrink-0 text-accent" />
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-primary-foreground/90">
+                    {stat.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </>
+        }
       />
 
       <section className="container-x py-16 md:py-24">
