@@ -119,7 +119,7 @@ export default function AffiliatesPage() {
                 width={1280}
                 height={896}
                 loading="lazy"
-                className="h-48 w-full object-cover md:h-60"
+                className="aspect-[4/3] w-full object-cover object-top md:aspect-[3/2]"
               />
             </div>
             <p className="mt-4 text-sm text-primary-foreground/80">
