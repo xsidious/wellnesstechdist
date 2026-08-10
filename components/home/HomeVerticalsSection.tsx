@@ -8,8 +8,8 @@ const verticals = [
     body: "Pharmaceutical-grade compounded peptides, GLP-1 therapies, NAD+, and hormone protocols from verified 503A/503B partners.",
     href: "/products",
     cta: "Browse therapies",
-    image: "/images/peptides-hero.jpg",
-    alt: "Compounded peptide vial and clinical device on marble",
+    image: "/images/peptides-lab-vials.jpg",
+    alt: "Laboratory sample vials in a clinical autosampler tray",
   },
   {
     title: "Exosomes",
