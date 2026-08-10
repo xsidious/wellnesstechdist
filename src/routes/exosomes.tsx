@@ -444,7 +444,7 @@ function Exosomes() {
           </h2>
           <div className="mt-8 overflow-hidden rounded-sm border border-primary/10 bg-card">
             <video
-              src="/videos/exosomes-1.mov"
+              src="/videos/exosomes-1.mp4"
               controls
               playsInline
               preload="metadata"
