@@ -111,15 +111,15 @@ export default function AffiliatesPage() {
                 Register as ambassador
               </Link>
             </div>
-            <div className="mt-7 overflow-hidden rounded-2xl border border-accent/30">
+            <div className="mt-7 overflow-hidden rounded-2xl border border-accent/30 bg-primary-foreground/5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/business-professionals.jpg"
                 alt="Wellness Tech Bio Distribution business professionals"
-                width={1280}
-                height={896}
+                width={1024}
+                height={1024}
                 loading="lazy"
-                className="aspect-[4/3] w-full object-cover object-top md:aspect-[3/2]"
+                className="block h-auto w-full"
               />
             </div>
             <p className="mt-4 text-sm text-primary-foreground/80">
