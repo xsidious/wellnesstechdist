@@ -47,11 +47,6 @@ const primaryNav: NavItem[] = [
     label: "Resources",
     items: [
       {
-        href: "/training",
-        label: "Training",
-        description: "Clinician education & protocols",
-      },
-      {
         href: "/faq",
         label: "FAQ",
         description: "Common questions",
@@ -65,6 +60,11 @@ const primaryNav: NavItem[] = [
         href: "/prescribers",
         label: "For Prescribers",
         description: "Credentialing & practice access",
+      },
+      {
+        href: "/training",
+        label: "Training",
+        description: "Clinician education & protocols",
       },
     ],
   },
