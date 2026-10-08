@@ -1,0 +1,314 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id                   String   @id @default(cuid())
+  type                 String
+  legalName            String
+  pricingTier          String   @default("standard")
+  verificationTier     Int      @default(0)
+  status               String   @default("active")
+  referringAffiliateId String   @default("")
+  assignedRep          String   @default("Alex Morgan")
+  slug                 String   @unique
+  createdAt            DateTime @default(now())
+  users                User[]
+  orders               Order[]
+  patients             PatientRef[]
+  clinicalPatients     ClinicalPatient[]
+  apiKeys              ApiKey[]
+  messages             Message[]
+}
+
+model User {
+  id         String    @id @default(cuid())
+  orgId      String
+  org        Organization @relation(fields: [orgId], references: [id])
+  email      String    @unique
+  name       String
+  phone      String    @default("")
+  roles      String
+  mfaHash    String    @default("")
+  mfaEnabled Boolean   @default(false)
+  lastLoginAt DateTime?
+  createdAt  DateTime  @default(now())
+  credential PrescriberCredential?
+  cartItems  CartItem[]
+  orders     Order[] @relation("PlacedBy")
+  affiliate  AffiliateProfile?
+}
+
+model MagicCode {
+  id        String   @id @default(cuid())
+  email     String
+  codeHash  String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model PrescriberCredential {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id])
+  npi              String
+  displayName      String
+  specialty        String   @default("")
+  licenseCipher    String   @default("")
+  deaCipher        String   @default("")
+  oigStatus        String   @default("pending_vendor")
+  verificationTier Int      @default(0)
+  checkedAt        DateTime @default(now())
+}
+
+model Product {
+  id                String   @id @default(cuid())
+  sku               String   @unique
+  rxcoreFormularyId String
+  name              String
+  productClass      String
+  category          String
+  form              String   @default("")
+  strength          String   @default("")
+  size              String   @default("")
+  budDays           Int      @default(0)
+  storage           String   @default("ambient")
+  rxRequired        Boolean  @default(false)
+  officeUse         Boolean  @default(false)
+  priceCents        Int
+  active            Boolean  @default(true)
+  orderable         Boolean  @default(true)
+  holdReason        String   @default("")
+  description       String   @default("")
+  updatedAt         DateTime @updatedAt
+  createdAt         DateTime @default(now())
+}
+
+model PatientRef {
+  id              String       @id @default(cuid())
+  orgId           String
+  org             Organization @relation(fields: [orgId], references: [id])
+  rxcorePatientId String       @unique
+  initials        String
+}
+
+/// Full clinical chart mirrored from KIAN (intake, therapy, signatures, demographics).
+model ClinicalPatient {
+  id                 String       @id @default(cuid())
+  orgId              String
+  org                Organization @relation(fields: [orgId], references: [id])
+  email              String
+  fullName           String
+  phone              String       @default("")
+  dateOfBirth        String       @default("")
+  gender             String       @default("")
+  allergies          String       @default("")
+  medications        String       @default("")
+  addressJson        String       @default("{}")
+  kianIntakeId       String       @default("")
+  kianReference      String       @default("")
+  sourceSite         String       @default("kian-prive")
+  intakeStatus       String       @default("")
+  statusNote         String       @default("")
+  programsJson       String       @default("[]")
+  intakePayloadJson  String       @default("{}")
+  signaturesJson     String       @default("[]")
+  therapyJson        String       @default("{}")
+  clinicalChartJson  String       @default("{}")
+  lastOrderId        String       @default("")
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  orders             Order[]
+
+  @@unique([orgId, email, kianIntakeId])
+  @@index([email])
+  @@index([kianIntakeId])
+  @@index([fullName])
+}
+
+model CartItem {
+  id              String @id @default(cuid())
+  userId          String
+  user            User   @relation(fields: [userId], references: [id])
+  productId       String
+  qty             Int
+  patientInitials String @default("")
+  rxcorePatientId String @default("")
+  sig             String @default("")
+  daysSupply      Int    @default(30)
+}
+
+model Order {
+  id                 String   @id @default(cuid())
+  orgId              String
+  org                Organization @relation(fields: [orgId], references: [id])
+  placedById         String
+  placedBy           User     @relation("PlacedBy", fields: [placedById], references: [id])
+  clinicalPatientId  String?
+  clinicalPatient    ClinicalPatient? @relation(fields: [clinicalPatientId], references: [id], onDelete: SetNull)
+  invoiceNumber      String   @unique
+  status             String
+  paymentStatus      String
+  paymentToken       String   @default("")
+  cardLast4          String   @default("")
+  shippingFeeCents   Int
+  subtotalCents      Int
+  totalCents         Int
+  rxcoreOrderId      String   @default("")
+  rxhereOrderId      String   @default("")
+  rxhereBatchId      String   @default("")
+  partnerExternalRef String   @default("")
+  shippingMethod     String   @default("2_DAY")
+  trackingNumber     String   @default("")
+  patientCipher      String   @default("")
+  patientJson        String   @default("")
+  prescriberJson     String   @default("")
+  shipToJson         String   @default("")
+  notes              String   @default("")
+  source             String   @default("portal")
+  splitMessage       String   @default("")
+  kianIntakeId       String   @default("")
+  clinicalChartJson  String   @default("{}")
+  intakePayloadJson  String   @default("{}")
+  signaturesJson     String   @default("[]")
+  therapyJson        String   @default("{}")
+  createdAt          DateTime @default(now())
+  lines              OrderLine[]
+  events             OrderEvent[]
+  commissions        Commission[]
+
+  @@index([partnerExternalRef])
+  @@index([rxhereOrderId])
+  @@index([kianIntakeId])
+  @@index([clinicalPatientId])
+}
+
+model OrderLine {
+  id               String @id @default(cuid())
+  orderId          String
+  order            Order  @relation(fields: [orderId], references: [id])
+  sku              String
+  name             String
+  productClass     String
+  qty              Int
+  unitPriceCents   Int
+  patientInitials  String @default("")
+  rxcorePatientId  String @default("")
+  prescriber       String @default("")
+  sig              String @default("")
+  strength         String @default("")
+  size             String @default("")
+  dosageForm       String @default("")
+  daysSupply       Int    @default(0)
+  lineStatus       String @default("received")
+  routedSource     String @default("")
+}
+
+model OrderEvent {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  eventId   String   @unique
+  type      String
+  payload   String
+  createdAt DateTime @default(now())
+}
+
+model Refill {
+  id              String   @id @default(cuid())
+  orgId           String
+  patientInitials String
+  productName     String
+  productSku      String
+  dueAt           DateTime
+  status          String   @default("due")
+  autopay         Boolean  @default(true)
+  daysSupply      Int      @default(30)
+}
+
+model AffiliateProfile {
+  id             String @id @default(cuid())
+  userId         String @unique
+  user           User   @relation(fields: [userId], references: [id])
+  code           String @unique
+  w9Status       String @default("sandbox_received")
+  payoutToken    String @default("")
+  commissionPlan String @default("devices-and-supplies-10")
+}
+
+model Commission {
+  id              String   @id @default(cuid())
+  affiliateUserId String
+  orgId           String
+  orderId         String
+  order           Order    @relation(fields: [orderId], references: [id])
+  eligibleCents   Int
+  rateBps         Int
+  amountCents     Int
+  status          String   @default("pending_batch")
+  createdAt       DateTime @default(now())
+}
+
+model ContentItem {
+  id         String @id @default(cuid())
+  type       String
+  title      String
+  body       String
+  accessTier Int    @default(1)
+  version    Int    @default(1)
+  slug       String @unique
+  protocolSku String @default("")
+}
+
+model ApiKey {
+  id        String       @id @default(cuid())
+  orgId     String
+  org       Organization @relation(fields: [orgId], references: [id])
+  label     String
+  keyHash   String       @unique
+  prefix    String
+  sandbox   Boolean      @default(true)
+  createdAt DateTime     @default(now())
+}
+
+model WebhookDelivery {
+  id        String   @id @default(cuid())
+  eventId   String   @unique
+  type      String
+  payload   String
+  status    String
+  createdAt DateTime @default(now())
+}
+
+model Message {
+  id         String       @id @default(cuid())
+  orgId      String
+  org        Organization @relation(fields: [orgId], references: [id])
+  authorName String
+  body       String
+  createdAt  DateTime     @default(now())
+}
+
+model AuditEvent {
+  id        String   @id @default(cuid())
+  actorId   String   @default("")
+  action    String
+  object    String
+  before    String   @default("")
+  after     String   @default("")
+  ip        String   @default("")
+  createdAt DateTime @default(now())
+}
+
+model IdempotencyKey {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  response  String
+  createdAt DateTime @default(now())
+}

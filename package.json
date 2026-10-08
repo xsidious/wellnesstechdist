@@ -1,0 +1,34 @@
+{
+  "name": "wellness-tech",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3010",
+    "build": "prisma generate && next build",
+    "start": "next start -p 3010",
+    "postinstall": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:sync-formulary": "tsx scripts/sync-formulary.ts",
+    "setup": "prisma generate && prisma db push && tsx prisma/seed.ts",
+    "test": "tsx --test src/lib/rules.test.ts src/lib/security.test.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.17.1",
+    "bcryptjs": "^3.0.2",
+    "next": "^15.5.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "prisma": "^6.17.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
+}
