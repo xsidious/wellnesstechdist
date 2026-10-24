@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AccessibilityWidget } from "@/components/AccessibilityWidget";
 import { Logo } from "@/components/Logo";
 
 function NavLinks() {
@@ -40,7 +41,7 @@ export function MarketingShell({ children }: { children: React.ReactNode }) {
           <div className="grid-3">
             <div className="stack">
               <Logo tone="white" className="logo-footer" />
-              <span>B2B resource for licensed practices. Pharmacy records stay with RxHere.</span>
+              <span>B2B resource for licensed practices. Pharmacy records stay with our fulfillment partners.</span>
               <span>Admin@thewellnesstech.com<br />877-847-6423</span>
             </div>
             <div className="stack">
@@ -56,6 +57,8 @@ export function MarketingShell({ children }: { children: React.ReactNode }) {
               <Link href="/affiliates">Affiliates</Link>
               <Link href="/compliance">503A / 503B</Link>
               <Link href="/contact">Contact</Link>
+              <Link href="/accessibility">Accessibility</Link>
+              <Link href="/email-preferences">Email opt-out</Link>
             </div>
           </div>
           <div className="legal">
@@ -64,6 +67,7 @@ export function MarketingShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </footer>
+      <AccessibilityWidget />
     </>
   );
 }

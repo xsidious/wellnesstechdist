@@ -19,7 +19,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Prom
       <h1>{office ? "Office stock" : "Catalog"}</h1>
       <p className="lede">
         {showPrice
-          ? "Partner prices are 2× RxHere formulary wholesale (same for KIAN and all practitioners)."
+          ? "Practice pricing from the formulary price list (shown at Tier 1+)."
           : "Tier 0 can browse. Prices unlock at Tier 1."}
       </p>
       <div className="grid-2">

@@ -35,7 +35,7 @@ export default async function PortalHome() {
         <div>
           <span className="kicker">{tierLabel(user.org.verificationTier)}</span>
           <h1>{user.org.legalName}</h1>
-          <p className="lede">One cart for every product class. Prescription lines are signed by a prescriber and fulfilled by RxHere.</p>
+          <p className="lede">One cart for every product class. Prescription lines are signed by a prescriber and fulfilled through our pharmacy network.</p>
         </div>
         <div className="quick">
           <Link className="btn btn-accent" href="/portal/catalog">Browse catalog</Link>
@@ -52,7 +52,7 @@ export default async function PortalHome() {
         <img src={photos.consult} alt="" />
         <div>
           <b>{user.org.assignedRep}</b>
-          <div className="muted">Your Wellness Tech representative. Pharmacy decisions stay with RxHere.</div>
+          <div className="muted">Your Wellness Tech representative. Pharmacy decisions stay with our licensed fulfillment partners.</div>
           <Link href="/portal/messages">Message {user.org.assignedRep.split(" ")[0]}</Link>
         </div>
       </div>

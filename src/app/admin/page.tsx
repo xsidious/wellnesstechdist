@@ -37,7 +37,7 @@ export default async function AdminHome() {
     { href: "/admin/practices", label: "Practices", desc: "Partner clinics, tiers, and status" },
     { href: "/admin/prescribers", label: "Prescribers", desc: "NPIs and credentialed clinicians" },
     { href: "/admin/affiliates", label: "Affiliates", desc: "Referral partners and commissions" },
-    { href: "/admin/products", label: "Catalog", desc: "RxHere formulary at 2× partner pricing" },
+    { href: "/admin/products", label: "Catalog", desc: "Formulary catalog at practice pricing (2× list)" },
     { href: "/admin/refills", label: "Refills", desc: "Due and scheduled refill queue" },
     { href: "/admin/messages", label: "Messages", desc: "Practice ↔ rep inbox" },
     { href: "/admin/audit", label: "Audit", desc: "Immutable ops trail" },

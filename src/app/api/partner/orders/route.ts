@@ -92,7 +92,7 @@ export async function POST(request: Request) {
   const missing = lines.filter((line) => !bySku.has(line.sku)).map((line) => line.sku);
   if (missing.length) {
     return NextResponse.json(
-      { ok: false, error: `Unknown SKUs on Wellness Tech: ${missing.join(", ")}. Sync the RxHere formulary first.` },
+      { ok: false, error: `Unknown SKUs on Wellness Tech: ${missing.join(", ")}. Sync the formulary first.` },
       { status: 400 },
     );
   }

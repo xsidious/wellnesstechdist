@@ -119,7 +119,7 @@ export function ClinicalChartView({
         <div className="chart-pills">
           <span className="pill">{paymentStatus}</span>
           {partnerExternalRef ? <span className="pill">KIAN {partnerExternalRef}</span> : null}
-          {rxhereOrderId ? <span className="pill">RxHere {rxhereOrderId}</span> : null}
+          {rxhereOrderId ? <span className="pill">Fulfillment {rxhereOrderId}</span> : null}
           {chart.intake?.status ? <span className="pill">Intake {String(chart.intake.status)}</span> : null}
         </div>
       </section>

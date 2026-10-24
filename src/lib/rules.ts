@@ -70,10 +70,10 @@ export function shippingCents(storages: string[]) {
 }
 
 export function routeSource(productClass: ProductClass) {
-  if (productClass === "503A") return "RxHere 503A";
+  if (productClass === "503A") return "503A compounding";
   if (productClass === "503B") return "Partner 503B";
   if (productClass === "brand") return "Licensed wholesaler";
-  if (productClass === "device" || productClass === "supply") return "RxHere stock";
+  if (productClass === "device" || productClass === "supply") return "Network stock";
   return "Held";
 }
 

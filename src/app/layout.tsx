@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Wellness Tech Distribution",
-  description: "503A and 503B ordering for licensed practices, with RxHere fulfillment behind one cart.",
+  description: "503A and 503B ordering for licensed practices, with pharmacy fulfillment behind one cart.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

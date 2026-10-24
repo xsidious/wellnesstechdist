@@ -45,7 +45,7 @@ export default async function AdminOrdersPage({
       </div>
 
       <form className="row" style={{ flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
-        <input name="q" defaultValue={query} placeholder="Search invoice, patient, practice, RxHere id" style={{ minWidth: 280 }} />
+        <input name="q" defaultValue={query} placeholder="Search invoice, patient, practice, Fulfillment id" style={{ minWidth: 280 }} />
         <select name="status" defaultValue={status || ""}>
           <option value="">All statuses</option>
           {["submitted", "received", "verified", "compounding", "shipped", "delivered", "on_hold"].map((s) => (
@@ -69,7 +69,7 @@ export default async function AdminOrdersPage({
               <th>Lines</th>
               <th>Payment</th>
               <th>Status</th>
-              <th>RxHere</th>
+              <th>Fulfillment</th>
               <th>Total</th>
             </tr>
           </thead>
