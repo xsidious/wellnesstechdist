@@ -8,7 +8,7 @@ export default function CompliancePage() {
       <PageBanner
         kicker="503A / 503B"
         title="One login. Separate rules for each class."
-        lede="Our compounding partner handles dispensing. Wellness Tech decides who can see a price and who can check out."
+        lede="Our compounding partner handles dispensing. Wellness Tech decides who can access the portal and who can check out."
         image={photos.peptides}
       />
       <section className="wrap section">

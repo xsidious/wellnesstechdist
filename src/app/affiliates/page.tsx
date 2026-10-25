@@ -43,15 +43,15 @@ export default function AffiliatesPage() {
           <div className="grid-3">
             <article className="dark-card stack">
               <b>Pays 10 percent</b>
-              <span>Aesthetic equipment, including Celexo PRO once it has a price, and clinical supplies such as syringe kits. The amount posts when that order is delivered.</span>
+              <span>Aesthetic equipment, including Celexo PRO, and clinical supplies such as syringe kits. Commission posts when that order is delivered.</span>
             </article>
             <article className="dark-card stack">
               <b>Pays nothing</b>
               <span>503A patient-specific lines, 503B office stock, and brand products. Exosomes and bulk APIs are not commissionable, and exosomes stay off checkout.</span>
             </article>
             <article className="dark-card stack">
-              <b>One example</b>
-              <span>An $84.00 device line posts $8.40. A $12.00 supply posts $1.20. A prescription line on the same invoice posts $0.00.</span>
+              <b>How it pays</b>
+              <span>Eligible device and supply lines earn a percentage after delivery. Prescription lines on the same invoice do not earn affiliate commission.</span>
             </article>
           </div>
         </div>
