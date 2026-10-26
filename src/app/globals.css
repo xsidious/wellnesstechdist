@@ -27,8 +27,8 @@ img { max-width: 100%; display: block; }
   max-width: 1200px;
   margin: 0 auto;
   /* Keep left/right as longhands so .hero/.section vertical shorthand cannot wipe gutters */
-  padding-left: max(40px, env(safe-area-inset-left, 0px));
-  padding-right: max(40px, env(safe-area-inset-right, 0px));
+  padding-left: max(48px, env(safe-area-inset-left, 0px));
+  padding-right: max(48px, env(safe-area-inset-right, 0px));
 }
 .nav { position: sticky; top: 0; z-index: 30; background: var(--card); border-bottom: 1px solid var(--line); }
 .nav-inner, .row, .split, .hero, .grid-3, .grid-2, .stats { display: flex; gap: 16px; }
@@ -52,8 +52,14 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
+  gap: 28px 40px;
 }
-.hero-copy { max-width: 640px; flex: 1 1 420px; }
+/* Homepage hero needs more breathing room than other wrap sections */
+.wrap.hero {
+  padding-left: max(56px, env(safe-area-inset-left, 0px));
+  padding-right: max(56px, env(safe-area-inset-right, 0px));
+}
+.hero-copy { max-width: 640px; flex: 1 1 420px; min-width: 0; }
 .hero h1, .section h2, .panel h2 { letter-spacing: -.03em; line-height: 1.08; margin: 0; }
 .hero h1 { font-size: clamp(2.4rem, 4.4vw, 3.8rem); max-width: 640px; }
 .lede { color: var(--muted); font-size: 19px; max-width: 520px; }
@@ -98,7 +104,19 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 .rep { display: flex; gap: 14px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 16px; }
 .rep img { width: 64px; height: 64px; border-radius: 16px; object-fit: cover; }
 .trust { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.trust .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 22px 24px; font-weight: 600; color: var(--muted); font-size: 14px; }
+.trust .wrap {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 22px;
+  padding-bottom: 22px;
+  padding-left: max(48px, env(safe-area-inset-left, 0px));
+  padding-right: max(48px, env(safe-area-inset-right, 0px));
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 14px;
+}
 .section { padding-top: 88px; padding-bottom: 88px; }
 .grid-3, .grid-2 { display: grid; gap: 20px; }
 .grid-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
@@ -158,8 +176,12 @@ textarea { min-height: 90px; }
 }
 @media (max-width: 800px) {
   .wrap {
-    padding-left: max(32px, env(safe-area-inset-left, 0px));
-    padding-right: max(32px, env(safe-area-inset-right, 0px));
+    padding-left: max(36px, env(safe-area-inset-left, 0px));
+    padding-right: max(36px, env(safe-area-inset-right, 0px));
+  }
+  .wrap.hero {
+    padding-left: max(36px, env(safe-area-inset-left, 0px));
+    padding-right: max(36px, env(safe-area-inset-right, 0px));
   }
   h1, h2, h3, p { overflow-wrap: break-word; }
   .nav-inner { min-height: 0; padding: 8px 0; gap: 12px; }
@@ -185,8 +207,8 @@ textarea { min-height: 90px; }
     gap: 12px 16px;
     padding-top: 18px;
     padding-bottom: 18px;
-    padding-left: max(32px, env(safe-area-inset-left, 0px));
-    padding-right: max(32px, env(safe-area-inset-right, 0px));
+    padding-left: max(36px, env(safe-area-inset-left, 0px));
+    padding-right: max(36px, env(safe-area-inset-right, 0px));
   }
   .section { padding-top: 48px; padding-bottom: 48px; }
   .band { padding-top: 48px; padding-bottom: 48px; }
@@ -228,8 +250,12 @@ textarea { min-height: 90px; }
 
 @media (max-width: 480px) {
   .wrap {
-    padding-left: max(28px, env(safe-area-inset-left, 0px));
-    padding-right: max(28px, env(safe-area-inset-right, 0px));
+    padding-left: max(32px, env(safe-area-inset-left, 0px));
+    padding-right: max(32px, env(safe-area-inset-right, 0px));
+  }
+  .wrap.hero {
+    padding-left: max(32px, env(safe-area-inset-left, 0px));
+    padding-right: max(32px, env(safe-area-inset-right, 0px));
   }
   .nav .logo { height: 46px; }
   .hero { padding-top: 24px; padding-bottom: 8px; }
@@ -238,8 +264,8 @@ textarea { min-height: 90px; }
   .main {
     padding-top: 18px;
     padding-bottom: 24px;
-    padding-left: max(28px, env(safe-area-inset-left, 0px));
-    padding-right: max(28px, env(safe-area-inset-right, 0px));
+    padding-left: max(32px, env(safe-area-inset-left, 0px));
+    padding-right: max(32px, env(safe-area-inset-right, 0px));
   }
 }
 
